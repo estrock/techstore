@@ -1,0 +1,56 @@
+<!-- <ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>login</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">login</ion-title>
+    </ion-toolbar>
+  </ion-header>
+</ion-content> -->
+
+<ion-content class="login-page">
+  <div class="container">
+    <img src="./assets/logo.PNG" alt="Tech Store Logo" class="logo" />
+
+    <h2>Inicio de Sesión</h2>
+    <p class="subtitle">Create an account</p>
+    <p class="hint">Enter your email to sign up for this app</p>
+
+    <ion-item class="input-item">
+      <ion-input
+        type="email"
+        placeholder="email@domain.com"
+        [(ngModel)]="email"
+        [ngModelOptions]="{ standalone: true }"
+      ></ion-input>
+    </ion-item>
+
+    <ion-button expand="block" shape="round" color="dark" (click)="onContinue()">
+      Continue
+    </ion-button>
+
+    <div class="divider">
+      <span>or</span>
+    </div>
+
+    <ion-button expand="block" fill="outline" (click)="loginWithGoogle()">
+      <ion-icon name="logo-google" slot="start"></ion-icon>
+      Continue with Google
+    </ion-button>
+
+    <ion-button expand="block" fill="outline" (click)="loginWithApple()">
+      <ion-icon name="logo-apple" slot="start"></ion-icon>
+      Continue with Apple
+    </ion-button>
+
+    <p class="terms">
+      By clicking continue, you agree to our
+      <a href="#">Terms of Service</a> and
+      <a href="#">Privacy Policy</a>.
+    </p>
+  </div>
+</ion-content>
