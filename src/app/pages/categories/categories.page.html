@@ -1,0 +1,67 @@
+<ion-header class="header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+
+    <ion-title>
+      <img src="assets/logo.PNG" alt="Tech Store" class="logo" />
+    </ion-title>
+
+    <ion-buttons slot="end">
+      <ion-icon name="notifications-outline" size="large"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar>
+    <ion-searchbar 
+      placeholder="Buscar categorías..." 
+      [(ngModel)]="searchTerm"
+      [ngModelOptions]="{standalone: true}">
+    </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="categories-page">
+  <div class="categories-section">
+    <div class="section-header">
+      <h2>TODAS LAS CATEGORÍAS</h2>
+      <ion-icon name="grid-outline"></ion-icon>
+    </div>
+
+    <ion-list class="categories-list">
+      <ion-item 
+        *ngFor="let category of categories" 
+        class="category-item"
+        [detail]="true"
+        [routerLink]="['/category-products', category]">
+        <ion-label>
+          <h3>{{ category }}</h3>
+          <p>{{ getProductsByCategory(category).length }} productos disponibles</p>
+        </ion-label>
+        <ion-badge slot="end" color="primary">{{ getProductsByCategory(category).length }}</ion-badge>
+      </ion-item>
+    </ion-list>
+
+    <!-- Si no hay categorías -->
+    <div *ngIf="categories.length === 0" class="empty-state">
+      <ion-icon name="grid-outline" size="large"></ion-icon>
+      <p>No hay categorías disponibles</p>
+    </div>
+  </div>
+</ion-content>
+
+<!-- 🔹 Pie de página REAL -->
+<ion-footer class="footer">
+  <ion-toolbar>
+    <div class="contact">
+      <h3>Contactanos</h3>
+      <div class="icons">
+        <ion-icon name="logo-tiktok"></ion-icon>
+        <ion-icon name="logo-whatsapp"></ion-icon>
+        <ion-icon name="logo-instagram"></ion-icon>
+        <ion-icon name="logo-youtube"></ion-icon>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-footer>

@@ -33,21 +33,21 @@
   </ion-toolbar>
 
   <ion-toolbar class="filter-toolbar">
-    <ion-segment [(ngModel)]="selectedFilter" [ngModelOptions]="{standalone: true}">
-      <ion-segment-button value="categorias">
-        <ion-icon name="heart-outline"></ion-icon>
-        <ion-label>Categorías</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="populares">
-        <ion-icon name="time-outline"></ion-icon>
-        <ion-label>Populares</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="recientes">
-        <ion-icon name="sparkles-outline"></ion-icon>
-        <ion-label>Recientes</ion-label>
-      </ion-segment-button>
-    </ion-segment>
-  </ion-toolbar>
+  <ion-segment [(ngModel)]="selectedFilter" [ngModelOptions]="{standalone: true}" (ionChange)="onFilterChange($event)">
+    <ion-segment-button value="categorias">
+      <ion-icon name="heart-outline"></ion-icon>
+      <ion-label>Categorías</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="populares">
+      <ion-icon name="time-outline"></ion-icon>
+      <ion-label>Populares</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="recientes">
+      <ion-icon name="sparkles-outline"></ion-icon>
+      <ion-label>Recientes</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+</ion-toolbar>
 </ion-header>
 
 <ion-content class="home-page">

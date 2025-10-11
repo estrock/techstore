@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { IonicSlides } from '@ionic/angular';
 import { register } from 'swiper/element/bundle';
+import { Router } from '@angular/router';
 
 
 register();
@@ -45,7 +46,8 @@ export class HomePage implements OnInit {
     autoplay: { delay: 2500 },
   };
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
+  
 
   ngOnInit() {
     this.loadProducts();
@@ -57,5 +59,31 @@ export class HomePage implements OnInit {
       error: (err) => console.error('Error loading products:', err),
     });
   }
+
+  goToCategories() {
+    this.router.navigate(['/categories']);
+  }
+onFilterChange(event: any) {
+  const value = event.detail.value;
+  console.log('🔍 Filter changed to:', value); // ← Agrega esto
+  
+  if (value === 'categorias') {
+    console.log('🚀 Navigating to categories...'); // ← Agrega esto
+    this.router.navigate(['/categories']).then(success => {
+      console.log('✅ Navigation success:', success); // ← Agrega esto
+    }).catch(error => {
+      console.error('❌ Navigation error:', error); // ← Agrega esto
+    });
+  }
+  // Aquí puedes agregar lógica para los otros filtros
+  else if (value === 'populares') {
+    console.log('📊 Popular filter selected'); // ← Agrega esto
+    // Lógica para productos populares
+  }
+  else if (value === 'recientes') {
+    console.log('🆕 Recent filter selected'); // ← Agrega esto
+    // Lógica para productos recientes
+  }
+}
 
 }

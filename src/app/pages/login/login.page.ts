@@ -13,7 +13,7 @@ export class LoginPage implements OnInit {
 
   ngOnInit() {
   }
- email: string = '';
+email: string = '';
 
   constructor(private alertCtrl: AlertController) {}
 
