@@ -17,14 +17,23 @@
     <img src="./assets/logo.PNG" alt="Tech Store Logo" class="logo" />
 
     <h2>Inicio de Sesión</h2>
-    <p class="subtitle">Create an account</p>
-    <p class="hint">Enter your email to sign up for this app</p>
+    <p class="subtitle">Registrarse</p>
+    <p class="hint">Ingrese su email y contraseña para ingresar</p>
 
     <ion-item class="input-item">
       <ion-input
         type="email"
         placeholder="email@domain.com"
         [(ngModel)]="email"
+        [ngModelOptions]="{ standalone: true }"
+      ></ion-input>
+    </ion-item>
+
+    <ion-item class="input-item">
+      <ion-input
+        type="password"
+        placeholder="password"
+        [(ngModel)]="password"
         [ngModelOptions]="{ standalone: true }"
       ></ion-input>
     </ion-item>

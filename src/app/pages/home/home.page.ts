@@ -33,7 +33,7 @@ export class HomePage implements OnInit {
   // }
   products: Product[] = [];
   searchTerm: string = '';
-  selectedFilter: string = 'categorias';
+  selectedFilter: string = '';
 
   banners = [
     { img: 'assets/logo.PNG' },
@@ -68,6 +68,7 @@ onFilterChange(event: any) {
   console.log('🔍 Filter changed to:', value); // ← Agrega esto
   
   if (value === 'categorias') {
+    this.selectedFilter = '';
     console.log('🚀 Navigating to categories...'); // ← Agrega esto
     this.router.navigate(['/categories']).then(success => {
       console.log('✅ Navigation success:', success); // ← Agrega esto
