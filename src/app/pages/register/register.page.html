@@ -1,0 +1,65 @@
+<ion-content class="register-page">
+  <div class="container">
+    <img src="assets/logo.PNG" alt="Tech Store Logo" class="logo" />
+
+    <h2>Crear Cuenta</h2>
+    <p class="subtitle">Únete a TechStore</p>
+    <p class="hint">Completa tus datos para registrarte</p>
+
+    <ion-item class="input-item">
+      <ion-input
+        type="text"
+        placeholder="Nombre completo"
+        [(ngModel)]="name"
+      ></ion-input>
+    </ion-item>
+
+    <ion-item class="input-item">
+      <ion-input
+        type="email"
+        placeholder="correo@ejemplo.com"
+        [(ngModel)]="email"
+      ></ion-input>
+    </ion-item>
+
+    <ion-item class="input-item">
+      <ion-input
+        type="password"
+        placeholder="contraseña"
+        [(ngModel)]="password"
+      ></ion-input>
+    </ion-item>
+
+    <ion-item class="input-item">
+      <ion-input
+        type="password"
+        placeholder="confirmar contraseña"
+        [(ngModel)]="confirmPassword"
+      ></ion-input>
+    </ion-item>
+
+    <ion-button 
+      expand="block" 
+      shape="round" 
+      color="dark" 
+      (click)="onRegister()"
+      [disabled]="!isFormValid()">
+      Crear Cuenta
+    </ion-button>
+
+    <!-- BOTÓN PARA VOLVER AL LOGIN -->
+    <ion-button 
+      expand="block" 
+      fill="clear" 
+      color="medium" 
+      routerLink="/login">
+      ¿Ya tienes cuenta? Inicia Sesión
+    </ion-button>
+
+    <p class="terms">
+      Al registrarte, aceptas nuestros
+      <a href="#">Términos de Servicio</a> y
+      <a href="#">Política de Privacidad</a>.
+    </p>
+  </div>
+</ion-content>

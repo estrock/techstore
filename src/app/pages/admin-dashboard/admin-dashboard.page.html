@@ -1,0 +1,69 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Panel de Administración</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()">
+        <ion-icon name="log-out-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="dashboard-container">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Bienvenido Administrador</ion-card-title>
+        <ion-card-subtitle>Gestión de TechStore</ion-card-subtitle>
+      </ion-card-header>
+      
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="6">
+              <ion-card color="light" (click)="goToProducts()">
+                <ion-card-content class="dashboard-card">
+                  <ion-icon name="cube-outline" size="large"></ion-icon>
+                  <h3>Productos</h3>
+                  <p>Gestionar inventario</p>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+            
+            <ion-col size="6">
+              <ion-card color="light" (click)="goToOrders()">
+                <ion-card-content class="dashboard-card">
+                  <ion-icon name="receipt-outline" size="large"></ion-icon>
+                  <h3>Órdenes</h3>
+                  <p>Ver pedidos</p>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+          
+          <ion-row>
+            <ion-col size="6">
+              <ion-card color="light" (click)="goToStats()">
+                <ion-card-content class="dashboard-card">
+                  <ion-icon name="stats-chart-outline" size="large"></ion-icon>
+                  <h3>Estadísticas</h3>
+                  <p>Ver métricas</p>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+            
+            <ion-col size="6">
+              <ion-card color="light" (click)="goToUsers()">
+                <ion-card-content class="dashboard-card">
+                  <ion-icon name="people-outline" size="large"></ion-icon>
+                  <h3>Usuarios</h3>
+                  <p>Gestionar usuarios</p>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
