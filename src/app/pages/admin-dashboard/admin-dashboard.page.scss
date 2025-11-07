@@ -1,6 +1,6 @@
 /* 🔹 Página principal */
 .dashboard-page {
-  --background: #ffffff;
+  --background: #fefafa;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -10,7 +10,8 @@
     flex: 1;
     margin-top: 20px;
     padding: 0 16px;
-    color: #000;
+    color: #0d0d0d;
+    
 
     .section-header {
       display: flex;
@@ -30,14 +31,16 @@
         font-size: 1.5rem;
       }
     }
+    
 
     .dashboard-cards {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
       gap: 16px;
+      background-color: #a60f0f;
 
       .dashboard-card {
-        --background: #fff;
+        background: #a60f0f;
         border-radius: 12px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         text-align: center;

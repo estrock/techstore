@@ -1,3 +1,51 @@
+/* 🔹 SOBRESCRIBIR COLOR PRIMARY DE IONIC */
+:host {
+  --ion-color-primary: #4d8dff !important;
+  --ion-color-primary-rgb: 77, 141, 255 !important;
+  --ion-color-primary-contrast: #ffffff !important;
+  --ion-color-primary-contrast-rgb: 255, 255, 255 !important;
+  --ion-color-primary-shade: #447ce0 !important;
+  --ion-color-primary-tint: #5f98ff !important;
+}
+
+ion-toolbar {
+  --background: #fff !important;
+  --color: #000 !important;
+  --border-color: #eee !important;
+  
+  ion-button {
+    --color: #000 !important;
+  }
+  
+  ion-title {
+    color: #000 !important;
+    
+    .title-content {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      
+      .logo {
+        height: 24px;
+      }
+    }
+  }
+  
+  ion-menu-button {
+    color: #000 !important;
+  }
+}
+
+/* 🔹 Página principal */
+.products-page {
+  --background: #fefafa;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: #000;
+}
+
+/* 🔹 Información del usuario en header */
 .user-info-button {
   --padding-start: 8px;
   --padding-end: 8px;
@@ -10,7 +58,7 @@
     
     ion-icon {
       font-size: 1.5em;
-      color: var(--ion-color-primary-contrast);
+      color: #4d8dff !important; /* Nuevo color azul */
     }
     
     .user-details {
@@ -21,61 +69,86 @@
       .user-name {
         font-size: 0.9em;
         font-weight: 600;
-        color: var(--ion-color-primary-contrast);
+        color: #000 !important;
         line-height: 1.2;
       }
       
       .user-role {
         font-size: 0.7em;
         opacity: 0.9;
-        color: var(--ion-color-primary-contrast);
+        color: #4d8dff !important; /* Nuevo color azul */
+        font-weight: 600;
         line-height: 1.2;
         
         &.admin {
-          color: #ffd700;
-          font-weight: 600;
+          color: #4d8dff !important; /* Nuevo color azul */
         }
       }
     }
   }
 }
 
+/* 🔹 Tarjeta de usuario */
 .user-card {
   margin: 16px;
-  border-radius: 12px;
+  border-radius: 16px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+  background-color: #fff !important;
   
   ion-card-header {
-    padding-bottom: 8px;
+    background: #f0f5ff !important; /* Azul muy claro */
+    border-radius: 16px 16px 0 0;
+    padding: 16px;
     
     ion-card-title {
       display: flex;
       align-items: center;
       gap: 8px;
       font-size: 1.2em;
+      color: #4d8dff !important; /* Nuevo color azul */
+      font-weight: 700;
       
       ion-icon {
         font-size: 1.4em;
+        color: #4d8dff !important; /* Nuevo color azul */
       }
     }
     
     ion-card-subtitle {
       font-size: 0.9em;
-      color: var(--ion-color-medium);
+      color: #666 !important;
     }
   }
   
   ion-card-content {
+    background: #fff !important;
+    border-radius: 0 0 16px 16px;
+    padding: 16px;
+    
     p {
       margin: 8px 0;
       font-size: 0.9em;
       
       strong {
-        color: var(--ion-color-dark);
+        color: #333 !important;
       }
     }
   }
 }
 
+/* 🔹 Badges personalizados */
+.role-badge {
+  background: #6c757d !important;
+  color: white !important;
+  font-size: 0.8rem;
+  
+  &.admin-badge {
+    background: #4d8dff !important; /* Nuevo color azul */
+    color: white !important;
+  }
+}
+
+/* 🔹 Contenedor de productos */
 .products-container {
   padding: 8px;
   
@@ -84,56 +157,19 @@
   }
 }
 
-.empty-state {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 40vh;
-  padding: 16px;
-  
-  ion-card {
-    text-align: center;
-    width: 100%;
-    max-width: 400px;
-    border-radius: 16px;
-    
-    ion-card-header {
-      padding: 20px 16px 8px;
-      
-      ion-card-title {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 16px;
-        font-size: 1.3em;
-        
-        ion-icon {
-          font-size: 3em;
-          color: var(--ion-color-medium);
-        }
-      }
-    }
-    
-    ion-card-content {
-      p {
-        margin-bottom: 20px;
-        color: var(--ion-color-medium);
-      }
-    }
-  }
-}
-
-// Estilos para los items deslizables
+/* 🔹 Items de productos */
 ion-item-sliding {
   margin-bottom: 8px;
   border-radius: 12px;
   overflow: hidden;
   
-  ion-item {
+  .product-item {
     --padding-start: 12px;
     --inner-padding-end: 12px;
     --border-radius: 12px;
+    --background: #fff !important;
     margin-bottom: 4px;
+    border: 1px solid #f0f0f0;
     
     ion-thumbnail {
       width: 80px;
@@ -145,30 +181,68 @@ ion-item-sliding {
       }
     }
     
-    ion-label {
+    .product-label {
       h2 {
         font-weight: 600;
         margin-bottom: 4px;
+        color: #000;
       }
       
-      p {
+      .product-description {
         margin-bottom: 8px;
-        color: var(--ion-color-medium);
+        color: #666;
+        font-size: 0.9em;
+      }
+      
+      .product-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
       }
     }
   }
 }
 
-// Badges personalizados
-ion-badge {
-  margin-right: 4px;
-  margin-bottom: 4px;
-  font-weight: 500;
+/* 🔹 Badges de productos */
+.price-badge {
+  background: #28a745 !important;
+  color: white !important;
+  font-size: 0.8em;
 }
 
-// Botones de acciones
+.stock-badge {
+  background: #6c757d !important;
+  color: white !important;
+  font-size: 0.8em;
+}
+
+.category-badge {
+  background: #4d8dff !important; /* Nuevo color azul */
+  color: white !important;
+  font-size: 0.8em;
+}
+
+.featured-badge {
+  background: #ffc107 !important;
+  color: #000 !important;
+  font-size: 0.8em;
+}
+
+/* 🔹 Opciones de items */
 ion-item-options {
-  ion-item-option {
+  .edit-option {
+    --background: #4d8dff !important; /* Nuevo color azul */
+    color: white !important;
+    font-weight: 500;
+    
+    ion-icon {
+      margin-right: 8px;
+    }
+  }
+  
+  .delete-option {
+    --background: #dc3545 !important;
+    color: white !important;
     font-weight: 500;
     
     ion-icon {
@@ -177,7 +251,85 @@ ion-item-options {
   }
 }
 
-// Responsive
+/* 🔹 Estado vacío */
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40vh;
+  padding: 16px;
+  
+  .empty-card {
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 16px;
+    background: #fff !important;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+    
+    ion-card-header {
+      background: #f0f5ff !important; /* Azul muy claro */
+      border-radius: 16px 16px 0 0;
+      padding: 20px 16px 8px;
+      
+      ion-card-title {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        font-size: 1.3em;
+        color: #4d8dff !important; /* Nuevo color azul */
+        
+        ion-icon {
+          font-size: 3em;
+          color: #4d8dff !important; /* Nuevo color azul */
+        }
+      }
+    }
+    
+    ion-card-content {
+      background: #fff !important;
+      border-radius: 0 0 16px 16px;
+      
+      p {
+        margin-bottom: 20px;
+        color: #666 !important;
+      }
+    }
+  }
+}
+
+/* 🔹 Botones personalizados */
+.add-product-btn {
+  --background: #4d8dff !important; /* Nuevo color azul */
+  --background-activated: #447ce0 !important;
+  --background-hover: #5f98ff !important;
+}
+
+.add-first-btn {
+  --background: #4d8dff !important; /* Nuevo color azul */
+  --background-activated: #447ce0 !important;
+  --background-hover: #5f98ff !important;
+}
+
+/* 🔹 Header */
+.header {
+  ion-toolbar {
+    --background: #fff;
+    color: #000;
+    border-bottom: 1px solid #eee;
+  }
+
+  .logo {
+    height: 28px;
+  }
+
+  ion-icon {
+    color: #000;
+  }
+}
+
+/* 🔹 Responsive */
 @media (max-width: 768px) {
   .user-info-button {
     .user-details {
@@ -198,6 +350,32 @@ ion-item-options {
       p {
         font-size: 0.85em;
       }
+    }
+  }
+  
+  .product-item {
+    --padding-start: 8px;
+    --inner-padding-end: 8px;
+    
+    ion-thumbnail {
+      width: 60px;
+      height: 60px;
+    }
+    
+    .product-label {
+      h2 {
+        font-size: 0.9em;
+      }
+      
+      .product-description {
+        font-size: 0.8em;
+      }
+    }
+  }
+  
+  .product-badges {
+    ion-badge {
+      font-size: 0.7em !important;
     }
   }
 }

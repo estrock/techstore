@@ -10,7 +10,9 @@ import {
   getDoc,
   onSnapshot,
   query,
-  orderBy
+  orderBy,
+  where,
+  limit
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
@@ -23,8 +25,8 @@ export interface Product {
   image: string;
   stock: number;
   featured: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;  // Hacer opcionales
+  updatedAt?: Date;  // Hacer opcionales
 }
 
 @Injectable({
@@ -60,12 +62,22 @@ export class ProductsService {
       
       const products: Product[] = [];
       querySnapshot.forEach((doc) => {
+        const data = doc.data();
         products.push({
           id: doc.id,
-          ...doc.data()
+          name: data['name'],
+          description: data['description'],
+          price: data['price'],
+          category: data['category'],
+          image: data['image'],
+          stock: data['stock'],
+          featured: data['featured'] || false,
+          createdAt: data['createdAt']?.toDate(),
+          updatedAt: data['updatedAt']?.toDate()
         } as Product);
       });
       
+      console.log('✅ Productos obtenidos (admin):', products.length);
       return products;
     } catch (error) {
       console.error('❌ Error obteniendo productos:', error);
@@ -76,23 +88,115 @@ export class ProductsService {
   // 🔄 Obtener productos en tiempo real (para home usuarios)
   getProductsRealTime(): Observable<Product[]> {
     return new Observable((observer) => {
-      const q = query(collection(this.firestore, 'products'), orderBy('createdAt', 'desc'));
+      const q = query(
+        collection(this.firestore, 'products'), 
+        where('stock', '>', 0), // Solo productos con stock
+        orderBy('featured', 'desc'),
+        orderBy('createdAt', 'desc')
+      );
       
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const products: Product[] = [];
         querySnapshot.forEach((doc) => {
+          const data = doc.data();
           products.push({
             id: doc.id,
-            ...doc.data()
+            name: data['name'],
+            description: data['description'],
+            price: data['price'],
+            category: data['category'],
+            image: data['image'],
+            stock: data['stock'],
+            featured: data['featured'] || false,
+            createdAt: data['createdAt']?.toDate(),
+            updatedAt: data['updatedAt']?.toDate()
           } as Product);
         });
+        console.log('🔄 Productos en tiempo real:', products.length);
         observer.next(products);
       }, (error) => {
+        console.error('❌ Error en tiempo real:', error);
         observer.error(error);
       });
 
       return unsubscribe;
     });
+  }
+
+  // 🏠 Obtener productos para home (método simple)
+  async getProductsForHome(): Promise<Product[]> {
+    try {
+      const q = query(
+        collection(this.firestore, 'products'),
+        where('stock', '>', 0),
+        orderBy('featured', 'desc'),
+        orderBy('createdAt', 'desc'),
+        limit(20)
+      );
+      
+      const querySnapshot = await getDocs(q);
+      const products: Product[] = [];
+      
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        products.push({
+          id: doc.id,
+          name: data['name'],
+          description: data['description'],
+          price: data['price'],
+          category: data['category'],
+          image: data['image'],
+          stock: data['stock'],
+          featured: data['featured'] || false,
+          createdAt: data['createdAt']?.toDate(),
+          updatedAt: data['updatedAt']?.toDate()
+        } as Product);
+      });
+      
+      console.log('🏠 Productos para home:', products.length);
+      return products;
+    } catch (error) {
+      console.error('❌ Error obteniendo productos para home:', error);
+      throw error;
+    }
+  }
+
+  // 🔥 Obtener productos destacados
+  async getFeaturedProducts(): Promise<Product[]> {
+    try {
+      const q = query(
+        collection(this.firestore, 'products'),
+        where('featured', '==', true),
+        where('stock', '>', 0),
+        orderBy('createdAt', 'desc'),
+        limit(8)
+      );
+      
+      const querySnapshot = await getDocs(q);
+      const products: Product[] = [];
+      
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        products.push({
+          id: doc.id,
+          name: data['name'],
+          description: data['description'],
+          price: data['price'],
+          category: data['category'],
+          image: data['image'],
+          stock: data['stock'],
+          featured: data['featured'],
+          createdAt: data['createdAt']?.toDate(),
+          updatedAt: data['updatedAt']?.toDate()
+        } as Product);
+      });
+      
+      console.log('🔥 Productos destacados:', products.length);
+      return products;
+    } catch (error) {
+      console.error('❌ Error obteniendo productos destacados:', error);
+      throw error;
+    }
   }
 
   // ✏️ Actualizar producto
@@ -128,9 +232,18 @@ export class ProductsService {
       const docSnap = await getDoc(docRef);
       
       if (docSnap.exists()) {
+        const data = docSnap.data();
         return {
           id: docSnap.id,
-          ...docSnap.data()
+          name: data['name'],
+          description: data['description'],
+          price: data['price'],
+          category: data['category'],
+          image: data['image'],
+          stock: data['stock'],
+          featured: data['featured'] || false,
+          createdAt: data['createdAt']?.toDate(),
+          updatedAt: data['updatedAt']?.toDate()
         } as Product;
       } else {
         return null;

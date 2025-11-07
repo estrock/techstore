@@ -1,39 +1,28 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { IonicSlides } from '@ionic/angular';
 import { register } from 'swiper/element/bundle';
 import { Router } from '@angular/router';
-
+import { ProductsService, Product } from '../../services/products.service';
+import { Subscription } from 'rxjs';
 
 register();
-
-interface Product {
-  id: string;
-  product_name: string;
-  product_category: string;
-  product_price: number;
-  product_description: string;
-  stock_quantity: number;
-  manufacturer: string;
-  subcategory: string;
-  img: string;
-}
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
-  standalone:false,
+  standalone: false,
 })
-export class HomePage implements OnInit {
+export class HomePage implements OnInit, OnDestroy {
 
-  // constructor() { }
-
-  // ngOnInit() {
-  // }
+  // ✅ SOLO productos de Firebase
   products: Product[] = [];
+  
   searchTerm: string = '';
-  selectedFilter: string = '';
+  selectedFilter: string = 'recientes';
+  isLoading: boolean = true;
+
+  private productsSubscription: Subscription | null = null;
 
   banners = [
     { img: 'assets/logo.PNG' },
@@ -46,45 +35,90 @@ export class HomePage implements OnInit {
     autoplay: { delay: 2500 },
   };
 
-  constructor(private http: HttpClient, private router: Router) {}
-  
+  constructor(
+    private router: Router,
+    private productsService: ProductsService
+  ) {}
 
   ngOnInit() {
-    this.loadProducts();
+    this.loadFirebaseProducts();
   }
 
-  loadProducts() {
-    this.http.get<Product[]>('assets/bd.json').subscribe({
-      next: (data) => (this.products = data),
-      error: (err) => console.error('Error loading products:', err),
+  ngOnDestroy() {
+    if (this.productsSubscription) {
+      this.productsSubscription.unsubscribe();
+    }
+  }
+
+  // 🔥 Cargar SOLO productos desde Firebase
+  loadFirebaseProducts() {
+    this.isLoading = true;
+    
+    this.productsSubscription = this.productsService.getProductsRealTime().subscribe({
+      next: (products) => {
+        this.products = products;
+        this.isLoading = false;
+        console.log('✅ Productos de ADMIN cargados:', products.length);
+        
+        // Debug: ver cada producto
+        products.forEach((product, index) => {
+          console.log(`📦 Producto ${index + 1}:`, {
+            nombre: product.name,
+            precio: product.price,
+            categoria: product.category,
+            stock: product.stock,
+            destacado: product.featured
+          });
+        });
+      },
+      error: (error) => {
+        console.error('❌ Error cargando productos:', error);
+        this.isLoading = false;
+      }
     });
   }
 
-  goToCategories() {
-    this.router.navigate(['/categories']);
+  // 🏷️ Formatear precio
+  formatPrice(price: number): string {
+    return new Intl.NumberFormat('es-MX', {
+      style: 'currency',
+      currency: 'MXN'
+    }).format(price);
   }
-onFilterChange(event: any) {
-  const value = event.detail.value;
-  console.log('🔍 Filter changed to:', value); // ← Agrega esto
-  
-  if (value === 'categorias') {
-    this.selectedFilter = '';
-    console.log('🚀 Navigating to categories...'); // ← Agrega esto
-    this.router.navigate(['/categories']).then(success => {
-      console.log('✅ Navigation success:', success); // ← Agrega esto
-    }).catch(error => {
-      console.error('❌ Navigation error:', error); // ← Agrega esto
-    });
-  }
-  // Aquí puedes agregar lógica para los otros filtros
-  else if (value === 'populares') {
-    console.log('📊 Popular filter selected'); // ← Agrega esto
-    // Lógica para productos populares
-  }
-  else if (value === 'recientes') {
-    console.log('🆕 Recent filter selected'); // ← Agrega esto
-    // Lógica para productos recientes
-  }
-}
 
+  // 🔄 Manejar cambio de filtro
+  onFilterChange(event: any) {
+    const value = event.detail.value;
+    
+    if (value === 'categorias') {
+      this.router.navigate(['/categories']);
+    }
+    else if (value === 'populares') {
+      console.log('📊 Filtro populares seleccionado');
+      // Aquí puedes implementar lógica para productos populares
+    }
+    else if (value === 'recientes') {
+      console.log('🆕 Filtro recientes seleccionado');
+      // Los productos ya vienen ordenados por fecha de creación
+    }
+  }
+
+  // 🛒 Ir al carrito
+  goToCart() {
+    this.router.navigate(['/cart']);
+  }
+
+  // 📱 Ver detalles del producto
+  viewProductDetails(product: Product) {
+    console.log('Ver detalles:', product);
+    // this.router.navigate(['/product-details', product.id]);
+  }
+
+  // 🔄 Recargar productos
+  refreshProducts(event: any) {
+    this.loadFirebaseProducts();
+    setTimeout(() => {
+      event.target.complete();
+    }, 1000);
+  }
 }
