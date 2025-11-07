@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AdminDashboardPage } from './pages/admin-dashboard/admin-dashboard.page';
+import { AdminProductsPage } from './pages/admin-products/admin-products.page';
 
 const routes: Routes = [
   // {
@@ -31,7 +32,12 @@ const routes: Routes = [
 
   },
   { path: 'admin-dashboard',
-   loadChildren: () => import('./pages/admin-dashboard/admin-dashboard.module').then(m => m.AdminDashboardPageModule) },
+   loadChildren: () => import('./pages/admin-dashboard/admin-dashboard.module').then(m => m.AdminDashboardPageModule) 
+  },
+    { 
+  path: 'admin-products',
+  loadChildren: () => import('./pages/admin-products/admin-products.module').then(m => m.AdminProductsPageModule) // ✅ CORRECTO
+},
 ];
 @NgModule({
   imports: [

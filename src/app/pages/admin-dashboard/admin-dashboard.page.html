@@ -1,61 +1,121 @@
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-title>Panel de Administración</ion-title>
+<ion-header class="header">
+  <!-- 🔹 Barra superior con menú, logo y notificaciones -->
+  <ion-toolbar >
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+
+    <ion-title>
+      <img src="assets/logo.PNG" alt="Tech Store" class="logo" />
+    </ion-title>
+
     <ion-buttons slot="end">
-      <ion-button (click)="logout()">
+      <!-- 🔹 Información mejorada del usuario -->
+      <ion-button fill="clear" class="user-info-btn">
+        <ion-icon name="person-circle" slot="start"></ion-icon>
+        <div class="user-details">
+          <div class="user-name">{{ userName }}</div>
+          <div class="user-email">{{ userEmail }}</div>
+          <div class="user-role" [class.admin-badge]="userRole === 'admin'">
+            {{ userRole === 'admin' ? '👑 Admin' : 'Usuario' }}
+          </div>
+        </div>
+      </ion-button>
+      
+      <!-- 🔹 Botón de recargar (opcional, para testing) -->
+      <ion-button fill="clear" (click)="refreshUserData()" title="Recargar datos">
+        <ion-icon name="refresh-outline"></ion-icon>
+      </ion-button>
+      
+      <!-- 🔹 Botón de logout -->
+      <ion-button fill="clear" (click)="logout()" title="Cerrar Sesión">
         <ion-icon name="log-out-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+
+  <!-- 🔹 Barra de búsqueda -->
+  <ion-toolbar>
+    <ion-searchbar 
+      placeholder="Buscar en el panel..." 
+      [(ngModel)]="searchTerm" 
+      [ngModelOptions]="{standalone: true}">
+    </ion-searchbar>
+  </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="dashboard-page">
   <div class="dashboard-container">
+    <!-- 🔹 Tarjeta de bienvenida con información del usuario -->
+    <ion-card color="red" class="welcome-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="person-circle" color="primary"></ion-icon>
+          Bienvenido, {{ userName }}
+        </ion-card-title>
+        <ion-card-subtitle>
+          Panel de Administración de TechStore
+          <ion-badge *ngIf="userRole === 'admin'" color="warning">
+            👑 Administrador
+          </ion-badge>
+        </ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p><strong>Email:</strong> {{ userEmail }}</p>
+        <p><strong>Rol:</strong> {{ userRole === 'admin' ? 'Administrador' : 'Usuario' }}</p>
+        <p><strong>Estado:</strong> 
+          <ion-badge color="success">Sesión Activa</ion-badge>
+        </p>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- 🔹 Grid de opciones del dashboard -->
     <ion-card>
       <ion-card-header>
-        <ion-card-title>Bienvenido Administrador</ion-card-title>
-        <ion-card-subtitle>Gestión de TechStore</ion-card-subtitle>
+        <ion-card-title>Herramientas de Administración</ion-card-title>
+        <ion-card-subtitle>Gestión completa de TechStore</ion-card-subtitle>
       </ion-card-header>
-      
+
       <ion-card-content>
         <ion-grid>
           <ion-row>
             <ion-col size="6">
-              <ion-card color="light" (click)="goToProducts()">
+              <ion-card color="light" button (click)="goToProducts()">
                 <ion-card-content class="dashboard-card">
-                  <ion-icon name="cube-outline" size="large"></ion-icon>
-                  <h3>Productos</h3>
-                  <p>Gestionar inventario</p>
+                  <ion-icon name="cube-outline" size="large" color="primary"></ion-icon>
+                  <h3>Gestionar Productos</h3>
+                  <p>Crear, editar y eliminar</p>
                 </ion-card-content>
               </ion-card>
             </ion-col>
-            
+
             <ion-col size="6">
-              <ion-card color="light" (click)="goToOrders()">
+              <ion-card color="light" button (click)="goToOrders()">
                 <ion-card-content class="dashboard-card">
-                  <ion-icon name="receipt-outline" size="large"></ion-icon>
+                  <ion-icon name="receipt-outline" size="large" color="primary"></ion-icon>
                   <h3>Órdenes</h3>
                   <p>Ver pedidos</p>
                 </ion-card-content>
               </ion-card>
             </ion-col>
           </ion-row>
-          
+
           <ion-row>
             <ion-col size="6">
-              <ion-card color="light" (click)="goToStats()">
+              <ion-card color="light" button (click)="goToStats()">
                 <ion-card-content class="dashboard-card">
-                  <ion-icon name="stats-chart-outline" size="large"></ion-icon>
+                  <ion-icon name="stats-chart-outline" size="large" color="primary"></ion-icon>
                   <h3>Estadísticas</h3>
                   <p>Ver métricas</p>
                 </ion-card-content>
               </ion-card>
             </ion-col>
-            
+
             <ion-col size="6">
-              <ion-card color="light" (click)="goToUsers()">
+              <ion-card color="light" button (click)="goToUsers()">
                 <ion-card-content class="dashboard-card">
-                  <ion-icon name="people-outline" size="large"></ion-icon>
+                  <ion-icon name="people-outline" size="large" color="primary"></ion-icon>
                   <h3>Usuarios</h3>
                   <p>Gestionar usuarios</p>
                 </ion-card-content>
@@ -67,3 +127,18 @@
     </ion-card>
   </div>
 </ion-content>
+
+<!-- 🔹 Footer -->
+<ion-footer class="footer">
+  <ion-toolbar>
+    <div class="contact">
+      <h3>Contáctanos</h3>
+      <div class="icons">
+        <ion-icon name="logo-tiktok"></ion-icon>
+        <ion-icon name="logo-whatsapp"></ion-icon>
+        <ion-icon name="logo-instagram"></ion-icon>
+        <ion-icon name="logo-youtube"></ion-icon>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-footer>

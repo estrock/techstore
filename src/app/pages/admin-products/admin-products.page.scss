@@ -1,0 +1,203 @@
+.user-info-button {
+  --padding-start: 8px;
+  --padding-end: 8px;
+  margin-right: 8px;
+  
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    
+    ion-icon {
+      font-size: 1.5em;
+      color: var(--ion-color-primary-contrast);
+    }
+    
+    .user-details {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      
+      .user-name {
+        font-size: 0.9em;
+        font-weight: 600;
+        color: var(--ion-color-primary-contrast);
+        line-height: 1.2;
+      }
+      
+      .user-role {
+        font-size: 0.7em;
+        opacity: 0.9;
+        color: var(--ion-color-primary-contrast);
+        line-height: 1.2;
+        
+        &.admin {
+          color: #ffd700;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
+
+.user-card {
+  margin: 16px;
+  border-radius: 12px;
+  
+  ion-card-header {
+    padding-bottom: 8px;
+    
+    ion-card-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.2em;
+      
+      ion-icon {
+        font-size: 1.4em;
+      }
+    }
+    
+    ion-card-subtitle {
+      font-size: 0.9em;
+      color: var(--ion-color-medium);
+    }
+  }
+  
+  ion-card-content {
+    p {
+      margin: 8px 0;
+      font-size: 0.9em;
+      
+      strong {
+        color: var(--ion-color-dark);
+      }
+    }
+  }
+}
+
+.products-container {
+  padding: 8px;
+  
+  ion-list {
+    background: transparent;
+  }
+}
+
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40vh;
+  padding: 16px;
+  
+  ion-card {
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 16px;
+    
+    ion-card-header {
+      padding: 20px 16px 8px;
+      
+      ion-card-title {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        font-size: 1.3em;
+        
+        ion-icon {
+          font-size: 3em;
+          color: var(--ion-color-medium);
+        }
+      }
+    }
+    
+    ion-card-content {
+      p {
+        margin-bottom: 20px;
+        color: var(--ion-color-medium);
+      }
+    }
+  }
+}
+
+// Estilos para los items deslizables
+ion-item-sliding {
+  margin-bottom: 8px;
+  border-radius: 12px;
+  overflow: hidden;
+  
+  ion-item {
+    --padding-start: 12px;
+    --inner-padding-end: 12px;
+    --border-radius: 12px;
+    margin-bottom: 4px;
+    
+    ion-thumbnail {
+      width: 80px;
+      height: 80px;
+      
+      img {
+        border-radius: 8px;
+        object-fit: cover;
+      }
+    }
+    
+    ion-label {
+      h2 {
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      
+      p {
+        margin-bottom: 8px;
+        color: var(--ion-color-medium);
+      }
+    }
+  }
+}
+
+// Badges personalizados
+ion-badge {
+  margin-right: 4px;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+// Botones de acciones
+ion-item-options {
+  ion-item-option {
+    font-weight: 500;
+    
+    ion-icon {
+      margin-right: 8px;
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .user-info-button {
+    .user-details {
+      .user-name {
+        font-size: 0.8em;
+      }
+      
+      .user-role {
+        font-size: 0.65em;
+      }
+    }
+  }
+  
+  .user-card {
+    margin: 8px;
+    
+    ion-card-content {
+      p {
+        font-size: 0.85em;
+      }
+    }
+  }
+}

@@ -17,6 +17,7 @@ import {
 } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +25,10 @@ import { AlertController } from '@ionic/angular';
 export class AuthService {
   currentUser: any = null;
   userRole: string = 'user';
+  
+  // BehaviorSubject para observar cambios en el usuario
+  private currentUserSubject = new BehaviorSubject<any>(null);
+  public currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(
     private auth: Auth,
@@ -34,34 +39,39 @@ export class AuthService {
     this.initializeAuthListener();
   }
 
-  private initializeAuthListener() {
-    // Escuchar cambios de autenticación
-    user(this.auth).subscribe(async (user: User | null) => {
-      if (user) {
-        this.currentUser = user;
-        await this.loadUserRole(user.uid);
-        console.log('👤 Usuario logueado:', user.email, 'Rol:', this.userRole);
-      } else {
-        this.currentUser = null;
-        this.userRole = 'user';
-        console.log('👤 Usuario no logueado');
+ private initializeAuthListener() {
+  user(this.auth).subscribe(async (user: User | null) => {
+    if (user) {
+      this.currentUser = user;
+      this.currentUserSubject.next(user);
+      await this.loadUserRole(user.uid);
+      console.log('✅ Sesión restaurada:', user.email);
+    } else {
+      // ❌ No limpies el usuario si estamos en desarrollo
+      const devSession = localStorage.getItem('dev_session');
+      if (devSession === 'active') {
+        console.log('🧩 Modo desarrollo activo: se mantiene sesión temporal');
+        return; // evita cerrar sesión
       }
-    });
-  }
+      this.currentUser = null;
+      this.currentUserSubject.next(null);
+      this.userRole = 'user';
+      console.log('👤 Usuario no logueado');
+    }
+  });
+}
 
-  // 🔐 Login con email y password
+
   async login(email: string, password: string): Promise<boolean> {
     try {
       console.log('🔑 Intentando login con:', email);
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
       console.log('✅ Login exitoso:', userCredential.user.email);
       
-      // ✅ ESPERAR a que cargue el rol antes de redirigir
       await this.loadUserRole(userCredential.user.uid);
       
       console.log('🎯 Rol detectado:', this.userRole);
       
-      // REDIRECCIÓN SEGÚN ROL
       if (this.userRole === 'admin') {
         console.log('🚀 Redirigiendo ADMIN a admin-dashboard');
         this.router.navigate(['/admin-dashboard']);
@@ -78,13 +88,11 @@ export class AuthService {
     }
   }
 
-  // 👤 Registro de nuevo usuario
   async register(email: string, password: string, name: string): Promise<boolean> {
     try {
       console.log('📝 Intentando registro con:', email);
       const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
       
-      // Crear perfil del usuario en Firestore
       await this.createUserProfile(userCredential.user.uid, email, name);
       
       console.log('✅ Registro exitoso:', userCredential.user.email);
@@ -97,7 +105,6 @@ export class AuthService {
     }
   }
 
-  // 🔓 Logout
   async logout() {
     try {
       await signOut(this.auth);
@@ -108,18 +115,15 @@ export class AuthService {
     }
   }
 
-  // 🎯 Login con Google
   async loginWithGoogle() {
     try {
       console.log('🔗 Iniciando login con Google...');
       const provider = new GoogleAuthProvider();
       const userCredential = await signInWithPopup(this.auth, provider);
       
-      // Verificar si es usuario nuevo o existente
       const userDoc = await getDoc(doc(this.firestore, 'users', userCredential.user.uid));
       
       if (!userDoc.exists()) {
-        // Crear perfil para nuevo usuario de Google
         await this.createUserProfile(
           userCredential.user.uid, 
           userCredential.user.email || '', 
@@ -135,13 +139,12 @@ export class AuthService {
     }
   }
 
-  // 📝 Crear perfil de usuario en Firestore
   private async createUserProfile(uid: string, email: string, name: string) {
     try {
       const userData = {
         email: email,
         name: name,
-        role: 'user', // Rol por defecto
+        role: 'user',
         createdAt: new Date(),
         updatedAt: new Date()
       };
@@ -153,7 +156,6 @@ export class AuthService {
     }
   }
 
-  // 👑 Cargar rol del usuario desde Firestore
   private async loadUserRole(uid: string) {
     try {
       console.log('🔍 Cargando rol para UID:', uid);
@@ -170,22 +172,18 @@ export class AuthService {
       }
     } catch (error: any) {
       console.error('❌ Error cargando rol:', error);
-      console.log('Código de error:', error?.code, 'Mensaje:', error?.message);
       this.userRole = 'user';
     }
   }
 
-  // ❓ Verificar si usuario es admin
   isAdmin(): boolean {
     return this.userRole === 'admin';
   }
 
-  // ❓ Verificar si usuario está logueado
   isLoggedIn(): boolean {
     return this.currentUser !== null;
   }
 
-  // 📱 Mostrar alertas
   private async showAlert(header: string, message: string) {
     const alert = await this.alertCtrl.create({
       header: header,
@@ -195,7 +193,6 @@ export class AuthService {
     await alert.present();
   }
 
-  // 🗂️ Obtener mensajes de error amigables
   private getAuthErrorMessage(errorCode: string): string {
     const errorMessages: { [key: string]: string } = {
       'auth/invalid-email': 'El formato del email es inválido',
