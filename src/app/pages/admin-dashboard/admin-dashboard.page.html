@@ -1,6 +1,6 @@
 <ion-header class="header">
   <!-- 🔹 Barra superior con menú, logo y notificaciones -->
-  <ion-toolbar >
+  <ion-toolbar>
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
@@ -21,12 +21,12 @@
           </div>
         </div>
       </ion-button>
-      
+
       <!-- 🔹 Botón de recargar (opcional, para testing) -->
       <ion-button fill="clear" (click)="refreshUserData()" title="Recargar datos">
         <ion-icon name="refresh-outline"></ion-icon>
       </ion-button>
-      
+
       <!-- 🔹 Botón de logout -->
       <ion-button fill="clear" (click)="logout()" title="Cerrar Sesión">
         <ion-icon name="log-out-outline"></ion-icon>
@@ -36,10 +36,7 @@
 
   <!-- 🔹 Barra de búsqueda -->
   <ion-toolbar>
-    <ion-searchbar 
-      placeholder="Buscar en el panel..." 
-      [(ngModel)]="searchTerm" 
-      [ngModelOptions]="{standalone: true}">
+    <ion-searchbar placeholder="Buscar en el panel..." [(ngModel)]="searchTerm" [ngModelOptions]="{standalone: true}">
     </ion-searchbar>
   </ion-toolbar>
 </ion-header>
@@ -64,14 +61,14 @@
       <ion-card-content>
         <p><strong>Email:</strong> {{ userEmail }}</p>
         <p><strong>Rol:</strong> {{ userRole === 'admin' ? 'Administrador' : 'Usuario' }}</p>
-        <p><strong>Estado:</strong> 
+        <p><strong>Estado:</strong>
           <ion-badge color="success">Sesión Activa</ion-badge>
         </p>
       </ion-card-content>
     </ion-card>
 
     <!-- 🔹 Grid de opciones del dashboard -->
-    <ion-card>
+    <ion-card color="red" class="welcome-card">
       <ion-card-header>
         <ion-card-title>Herramientas de Administración</ion-card-title>
         <ion-card-subtitle>Gestión completa de TechStore</ion-card-subtitle>
@@ -81,7 +78,7 @@
         <ion-grid>
           <ion-row>
             <ion-col size="6">
-              <ion-card color="light" button (click)="goToProducts()">
+              <ion-card color="red" button (click)="goToProducts()">
                 <ion-card-content class="dashboard-card">
                   <ion-icon name="cube-outline" size="large" color="primary"></ion-icon>
                   <h3>Gestionar Productos</h3>
@@ -91,7 +88,7 @@
             </ion-col>
 
             <ion-col size="6">
-              <ion-card color="light" button (click)="goToOrders()">
+              <ion-card color="red" button (click)="goToOrders()">
                 <ion-card-content class="dashboard-card">
                   <ion-icon name="receipt-outline" size="large" color="primary"></ion-icon>
                   <h3>Órdenes</h3>
@@ -103,7 +100,7 @@
 
           <ion-row>
             <ion-col size="6">
-              <ion-card color="light" button (click)="goToStats()">
+              <ion-card color="red" button (click)="goToStats()">
                 <ion-card-content class="dashboard-card">
                   <ion-icon name="stats-chart-outline" size="large" color="primary"></ion-icon>
                   <h3>Estadísticas</h3>
@@ -113,7 +110,7 @@
             </ion-col>
 
             <ion-col size="6">
-              <ion-card color="light" button (click)="goToUsers()">
+              <ion-card color="red" button (click)="goToUsers()">
                 <ion-card-content class="dashboard-card">
                   <ion-icon name="people-outline" size="large" color="primary"></ion-icon>
                   <h3>Usuarios</h3>
