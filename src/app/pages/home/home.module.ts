@@ -20,8 +20,8 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
     // SwiperModule,
     HttpClientModule,
     HomePageRoutingModule,
+    HomePage
   ],
-  declarations: [HomePage],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class HomePageModule {}

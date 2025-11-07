@@ -38,6 +38,11 @@ const routes: Routes = [
   path: 'admin-products',
   loadChildren: () => import('./pages/admin-products/admin-products.module').then(m => m.AdminProductsPageModule) // ✅ CORRECTO
 },
+  {
+    path: 'cart',
+    loadComponent: () => import('./cart/cart.page').then( m => m.CartPage)
+  },
+
 ];
 @NgModule({
   imports: [

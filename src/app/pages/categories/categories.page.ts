@@ -1,5 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { IonicModule } from '@ionic/angular';
+import { HttpClientModule } from '@angular/common/http';
+import { SocialIconsComponent } from '../../social-icons.component';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 interface Product {
   id: string;
@@ -17,7 +23,8 @@ interface Product {
   selector: 'app-categories',
   templateUrl: './categories.page.html',
   styleUrls: ['./categories.page.scss'],
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, IonicModule, HttpClientModule, SocialIconsComponent, FormsModule, RouterModule],
 })
 export class CategoriesPage implements OnInit {
 

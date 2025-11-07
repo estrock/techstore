@@ -6,6 +6,81 @@ ion-content {
   color: #000;
 }
 
+/* 🔹 Estilos para el icono del carrito */
+ion-toolbar {
+  ion-button[position-relative] {
+    --background-hover: rgba(255, 255, 255, 0.1);
+    
+    i.bi-cart3 {
+      transition: transform 0.2s ease;
+      
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+    
+    .badge {
+      font-size: 0.7rem;
+      padding: 0.25em 0.4em;
+      animation: pulse 2s infinite;
+    }
+  }
+}
+
+// Estilos adicionales para mejorar la visibilidad del icono del carrito
+ion-buttons {
+  ion-button {
+    &:hover {
+      i.bi-cart3 {
+        color: #000 !important;
+        transform: scale(1.1);
+      }
+    }
+  }
+}
+
+/* 🔹 Estilos para el carousel de banners */
+.carousel {
+  .carousel-item {
+    img {
+      border-radius: 0;
+      transition: transform 0.5s ease;
+    }
+    
+    &:hover img {
+      transform: scale(1.05);
+    }
+  }
+  
+  .carousel-caption {
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+    padding: 1rem;
+    backdrop-filter: blur(5px);
+  }
+  
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 10%;
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 .home-page {
   display: flex;
   flex-direction: column;

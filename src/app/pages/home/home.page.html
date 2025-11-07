@@ -1,46 +1,73 @@
 <ion-header class="header">
-  <ion-toolbar>
+  <ion-toolbar class="bg-primary text-white">
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-menu-button class="text-white"></ion-menu-button>
     </ion-buttons>
 
-    <ion-title>
+    <ion-title class="text-center">
       <img src="assets/logo.PNG" alt="Tech Store" class="logo" />
     </ion-title>
 
     <ion-buttons slot="end">
-      <ion-button (click)="goToCart()" fill="clear">
-        <ion-icon name="cart-outline" size="large"></ion-icon>
+      <ion-button (click)="goToCart()" fill="clear" class="position-relative">
+        <i class="bi bi-cart3 fs-3 text-dark"></i>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" *ngIf="cartItemCount > 0">
+          {{cartItemCount}}
+          <span class="visually-hidden">productos en carrito</span>
+        </span>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 
-  <ion-toolbar>
-    <ion-searchbar 
-      placeholder="Buscar productos..." 
-      [(ngModel)]="searchTerm" 
-      [ngModelOptions]="{standalone: true}">
-    </ion-searchbar>
+  <ion-toolbar class="bg-light">
+    <div class="container-fluid px-3">
+      <div class="input-group">
+        <span class="input-group-text bg-white border-end-0">
+          <ion-icon name="search-outline"></ion-icon>
+        </span>
+        <input 
+          type="text" 
+          class="form-control border-start-0" 
+          placeholder="Buscar productos..." 
+          [(ngModel)]="searchTerm" 
+          [ngModelOptions]="{standalone: true}"
+          (keyup)="onSearchChange($event)">
+        <button class="btn btn-outline-secondary" type="button" (click)="clearSearch()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+    </div>
   </ion-toolbar>
 
-  <ion-toolbar class="filter-toolbar">
-    <ion-segment 
-      [(ngModel)]="selectedFilter" 
-      [ngModelOptions]="{standalone: true}"
-      (ionChange)="onFilterChange($event)">
-      <ion-segment-button value="categorias">
-        <ion-icon name="apps-outline"></ion-icon>
-        <ion-label>Categorías</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="populares">
-        <ion-icon name="flame-outline"></ion-icon>
-        <ion-label>Populares</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="recientes">
-        <ion-icon name="time-outline"></ion-icon>
-        <ion-label>Recientes</ion-label>
-      </ion-segment-button>
-    </ion-segment>
+  <ion-toolbar class="filter-toolbar bg-white shadow-sm">
+    <div class="container-fluid">
+      <div class="btn-group w-100" role="group" aria-label="Filtros de productos">
+        <button 
+          type="button" 
+          class="btn btn-outline-primary flex-fill"
+          [class.active]="selectedFilter === 'categorias'"
+          (click)="onFilterChange('categorias')">
+          <ion-icon name="apps-outline" class="me-1"></ion-icon>
+          Categorías
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-outline-primary flex-fill"
+          [class.active]="selectedFilter === 'populares'"
+          (click)="onFilterChange('populares')">
+          <ion-icon name="flame-outline" class="me-1"></ion-icon>
+          Populares
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-outline-primary flex-fill"
+          [class.active]="selectedFilter === 'recientes'"
+          (click)="onFilterChange('recientes')">
+          <ion-icon name="time-outline" class="me-1"></ion-icon>
+          Recientes
+        </button>
+      </div>
+    </div>
   </ion-toolbar>
 </ion-header>
 
@@ -50,13 +77,34 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <!-- Banner Slider -->
-  <div class="banner-slider">
-    <ion-slides [options]="slideOpts">
-      <ion-slide *ngFor="let banner of banners">
-        <img [src]="banner.img" alt="Banner" />
-      </ion-slide>
-    </ion-slides>
+  <!-- Banner Slider con Bootstrap Carousel -->
+  <div id="bannerCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" *ngIf="banners.length > 0">
+    <div class="carousel-indicators">
+      <button *ngFor="let banner of banners; let i = index" 
+              type="button" 
+              [attr.data-bs-target]="'#bannerCarousel'" 
+              [attr.data-bs-slide-to]="i" 
+              [class.active]="i === 0"
+              [attr.aria-label]="'Slide ' + (i + 1)">
+      </button>
+    </div>
+    <div class="carousel-inner">
+      <div class="carousel-item" *ngFor="let banner of banners; let i = index" [class.active]="i === 0" data-bs-interval="3000">
+        <img [src]="banner.img" class="d-block w-100" [alt]="banner.title || 'Banner'" style="height: 200px; object-fit: cover;" />
+        <div class="carousel-caption d-none d-md-block" *ngIf="banner.title || banner.description">
+          <h5 class="fw-bold">{{banner.title}}</h5>
+          <p>{{banner.description}}</p>
+        </div>
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Anterior</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Siguiente</span>
+    </button>
   </div>
 
   <!-- Loading State -->
@@ -65,73 +113,130 @@
     <p>Cargando productos...</p>
   </div>
 
-  <!-- Productos de Firebase -->
-  <div *ngIf="!isLoading" class="recommendations">
-    <div class="section-header">
-      <h2>🔥 PRODUCTOS DISPONIBLES</h2>
-      <span class="products-count">{{ products.length }} productos</span>
+  <!-- Productos de Firebase con Bootstrap -->
+  <div *ngIf="!isLoading" class="container my-4 fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="fw-bold text-primary">
+        <i class="bi bi-fire"></i> PRODUCTOS DISPONIBLES
+      </h2>
+      <span class="badge bg-secondary rounded-pill">{{ products.length }} productos</span>
     </div>
 
-    <!-- ✅ CORREGIDO: Grid responsive en lugar de scroll horizontal -->
-    <div class="products-grid">
+    <!-- Grid de productos con Bootstrap -->
+    <div class="row g-4">
       <div 
-        class="product-card" 
+        class="col-12 col-sm-6 col-md-4 col-lg-3" 
         *ngFor="let product of products"
-        (click)="viewProductDetails(product)">
+        (click)="viewProductDetails(product)"
+        style="cursor: pointer;">
         
-        <div class="product-image-container">
-          <img 
-            [src]="product.image || 'assets/placeholder-product.jpg'" 
-            [alt]="product.name" 
-            class="product-image"
-            (error)="product.image = 'assets/placeholder-product.jpg'" />
-          
-          <!-- Badge para productos destacados -->
-          <ion-badge *ngIf="product.featured" class="featured-badge">
-            ⭐ Destacado
-          </ion-badge>
-          
-          <!-- Badge de stock -->
-          <ion-badge 
-            [class]="product.stock > 0 ? 'stock-badge' : 'out-of-stock-badge'"
-            class="stock-indicator">
-            {{ product.stock > 0 ? (product.stock + ' en stock') : 'Agotado' }}
-          </ion-badge>
-        </div>
+        <div class="card h-100 shadow-sm product-card-hover">
+          <div class="position-relative">
+            <img 
+              [src]="product.image || 'assets/placeholder-product.jpg'" 
+              [alt]="product.name" 
+              class="card-img-top"
+              style="height: 200px; object-fit: cover;"
+              (error)="product.image = 'assets/placeholder-product.jpg'" />
+            
+            <!-- Badge para productos destacados -->
+            <span *ngIf="product.featured" class="position-absolute top-0 start-0 translate-middle badge bg-warning text-dark">
+              <i class="bi bi-star-fill"></i> Destacado
+            </span>
+            
+            <!-- Badge de stock -->
+            <span 
+              class="position-absolute top-0 end-0 badge"
+              [class.bg-success]="product.stock > 0"
+              [class.bg-danger]="product.stock === 0">
+              <i class="bi" [class.bi-check-circle]="product.stock > 0" [class.bi-x-circle]="product.stock === 0"></i>
+              {{ product.stock > 0 ? (product.stock + ' disponibles') : 'Agotado' }}
+            </span>
+          </div>
 
-        <div class="product-info">
-          <h4 class="product-name">{{ product.name }}</h4>
-          <p class="product-category">{{ product.category }}</p>
-          <p class="product-price">{{ formatPrice(product.price) }}</p>
-          
-          <!-- Descripción corta -->
-          <p class="product-description" *ngIf="product.description">
-            {{ product.description | slice:0:60 }}...
-          </p>
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title fw-bold text-truncate">{{ product.name }}</h5>
+            <p class="card-text text-muted">
+              <i class="bi bi-tag"></i> {{ product.category }}
+            </p>
+            
+            <p class="card-text" *ngIf="product.description">
+              <small>{{ product.description | slice:0:80 }}...</small>
+            </p>
+            
+            <div class="mt-auto">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="h5 text-primary mb-0">{{ formatPrice(product.price) }}</span>
+                <button 
+                  class="btn btn-primary btn-sm"
+                  (click)="addToCart(product); $event.stopPropagation()"
+                  [disabled]="product.stock === 0">
+                  <i class="bi bi-cart-plus"></i> Agregar
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Mensaje si no hay productos -->
-    <div *ngIf="products.length === 0 && !isLoading" class="empty-products">
-      <ion-icon name="cube-outline" size="large"></ion-icon>
-      <h3>No hay productos disponibles</h3>
-      <p>Los productos aparecerán aquí cuando sean agregados desde el panel de administración</p>
+    <div *ngIf="products.length === 0" class="text-center py-5">
+      <div class="card border-0 bg-light">
+        <div class="card-body">
+          <i class="bi bi-inbox display-1 text-muted"></i>
+          <h3 class="mt-3">No hay productos disponibles</h3>
+          <p class="text-muted">Los productos aparecerán aquí cuando sean agregados desde el panel de administración</p>
+        </div>
+      </div>
     </div>
   </div>
 </ion-content>
 
-<!-- 🔹 Pie de página -->
-<ion-footer class="footer">
-  <ion-toolbar>
-    <div class="contact">
-      <h3>Contáctanos</h3>
-      <div class="icons">
-        <ion-icon name="logo-tiktok"></ion-icon>
-        <ion-icon name="logo-whatsapp"></ion-icon>
-        <ion-icon name="logo-instagram"></ion-icon>
-        <ion-icon name="logo-youtube"></ion-icon>
+<!-- 🔹 Pie de página con Bootstrap -->
+<ion-footer class="bg-dark text-white">
+  <div class="container py-4">
+    <div class="row">
+      <div class="col-md-6">
+        <h5 class="fw-bold mb-3">
+          <i class="bi bi-telephone-fill me-2"></i>Contáctanos
+        </h5>
+        <div class="d-flex gap-3">
+          <a href="#" class="btn btn-outline-light btn-sm">
+            <i class="bi bi-tiktok"></i> TikTok
+          </a>
+          <a href="#" class="btn btn-outline-success btn-sm">
+            <i class="bi bi-whatsapp"></i> WhatsApp
+          </a>
+          <a href="#" class="btn btn-outline-danger btn-sm">
+            <i class="bi bi-instagram"></i> Instagram
+          </a>
+          <a href="#" class="btn btn-outline-danger btn-sm">
+            <i class="bi bi-youtube"></i> YouTube
+          </a>
+        </div>
+      </div>
+      <div class="col-md-6 text-md-end">
+        <h5 class="fw-bold mb-3">
+          <i class="bi bi-info-circle me-2"></i>Información
+        </h5>
+        <p class="mb-1">
+          <i class="bi bi-geo-alt me-2"></i>Dirección: Calle Principal #123
+        </p>
+        <p class="mb-1">
+          <i class="bi bi-telephone me-2"></i>Teléfono: +1 234-567-8900
+        </p>
+        <p class="mb-0">
+          <i class="bi bi-envelope me-2"></i>Email: info@techstore.com
+        </p>
       </div>
     </div>
-  </ion-toolbar>
+    <hr class="my-3">
+    <div class="text-center">
+      <p class="mb-0">&copy; 2024 TechStore. Todos los derechos reservados.</p>
+    </div>
+  </div>
 </ion-footer>
+
+<!-- Iconos de redes sociales -->
+<app-social-icons></app-social-icons>
