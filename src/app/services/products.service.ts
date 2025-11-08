@@ -123,6 +123,24 @@ export class ProductsService {
     });
   }
 
+  // 🔒 Verificar si el cliente tiene permisos de lectura en la colección products
+  async canReadProducts(): Promise<boolean> {
+    try {
+      const q = query(collection(this.firestore, 'products'), limit(1));
+      await getDocs(q);
+      return true;
+    } catch (error: any) {
+      const code = (error?.code || '').toLowerCase();
+      const msg = (error?.message || '').toLowerCase();
+      if (code === 'permission-denied' || msg.includes('missing or insufficient permissions')) {
+        console.warn('🔒 Firestore: lectura de products denegada');
+        return false;
+      }
+      console.error('❌ Error verificando permisos de lectura:', error);
+      return false;
+    }
+  }
+
   // 🏠 Obtener productos para home (método simple)
   async getProductsForHome(): Promise<Product[]> {
     try {

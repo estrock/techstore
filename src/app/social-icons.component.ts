@@ -26,8 +26,9 @@ import { CommonModule } from '@angular/common';
   styles: [`
     .social-icons-container {
       position: fixed;
-      bottom: 20px;
-      right: 20px;
+      top: 50%;
+      right: 12px;
+      transform: translateY(-50%);
       z-index: 1000;
     }
 
@@ -77,8 +78,10 @@ import { CommonModule } from '@angular/common';
 
     @media (max-width: 768px) {
       .social-icons-container {
+        top: auto;
         bottom: 15px;
         right: 15px;
+        transform: none;
       }
       
       .social-icon {

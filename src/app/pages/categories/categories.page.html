@@ -9,13 +9,21 @@
     </ion-title>
 
     <ion-buttons slot="end">
-      <ion-icon name="notifications-outline" size="large"></ion-icon>
+      <ion-icon name="notifications-outline" size="large" aria-label="Notificaciones"></ion-icon>
     </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar class="bg-white">
+    <ion-breadcrumbs>
+      <ion-breadcrumb href="/home">Inicio</ion-breadcrumb>
+      <ion-breadcrumb aria-current="page">Categorías</ion-breadcrumb>
+    </ion-breadcrumbs>
   </ion-toolbar>
 
   <ion-toolbar>
     <ion-searchbar 
       placeholder="Buscar categorías..." 
+      aria-label="Buscar categorías"
       [(ngModel)]="searchTerm"
       [ngModelOptions]="{standalone: true}">
     </ion-searchbar>

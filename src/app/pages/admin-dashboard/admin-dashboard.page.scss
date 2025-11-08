@@ -100,14 +100,9 @@
 
 /* 🔹 Footer (igual al de categories-page) */
 ion-footer.footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
   background: #fff;
   border-top: 1px solid #ddd;
   text-align: center;
-  z-index: 100;
 }
 
 ion-footer .contact {

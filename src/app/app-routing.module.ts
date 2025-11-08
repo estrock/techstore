@@ -10,7 +10,8 @@ const routes: Routes = [
   // },
   {
     path: '',
-    loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
+    redirectTo: 'login',
+    pathMatch: 'full'
   },
   {
     path: 'login',
@@ -31,6 +32,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/categories/categories.module').then( m => m.CategoriesPageModule)
 
   },
+  {
+    path: 'category-products/:category',
+    loadComponent: () => import('./pages/category-products/category-products.page').then(m => m.CategoryProductsPage)
+  },
   { path: 'admin-dashboard',
    loadChildren: () => import('./pages/admin-dashboard/admin-dashboard.module').then(m => m.AdminDashboardPageModule) 
   },
@@ -41,6 +46,10 @@ const routes: Routes = [
   {
     path: 'cart',
     loadComponent: () => import('./cart/cart.page').then( m => m.CartPage)
+  },
+  {
+    path: 'search',
+    loadComponent: () => import('./pages/search/search.page').then(m => m.SearchPage)
   },
 
 ];

@@ -1,0 +1,84 @@
+<ion-header class="header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" aria-label="Volver al inicio"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <img src="assets/logo.PNG" alt="Tech Store" class="logo" />
+    </ion-title>
+  </ion-toolbar>
+
+  <ion-toolbar class="bg-white">
+    <ion-breadcrumbs>
+      <ion-breadcrumb href="/home">Inicio</ion-breadcrumb>
+      <ion-breadcrumb aria-current="page">Buscar</ion-breadcrumb>
+    </ion-breadcrumbs>
+  </ion-toolbar>
+
+  <ion-toolbar>
+    <div class="container-fluid px-3">
+      <div class="input-group">
+        <span class="input-group-text bg-white border-end-0">
+          <ion-icon name="search-outline"></ion-icon>
+        </span>
+        <input
+          type="text"
+          class="form-control border-start-0"
+          placeholder="Buscar productos..."
+          aria-label="Buscar productos"
+          [(ngModel)]="q"
+          (keyup)="onQueryChange()">
+        <button class="btn btn-outline-secondary" type="button" (click)="clearQuery()" aria-label="Limpiar búsqueda">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="isLoading" class="text-center py-5">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p class="mt-2">Buscando productos...</p>
+  </div>
+
+  <div *ngIf="!isLoading" class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="fw-bold text-primary">
+        Resultados de búsqueda
+      </h2>
+      <span class="badge bg-secondary rounded-pill">{{ results.length }} productos</span>
+    </div>
+
+    <div *ngIf="results.length === 0" class="text-center py-5">
+      <div class="card border-0 bg-light">
+        <div class="card-body">
+          <i class="bi bi-inbox display-1 text-muted"></i>
+          <h3 class="mt-3">Sin resultados</h3>
+          <p class="text-muted">Intenta con otro término o categoría</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4" *ngIf="results.length > 0">
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let product of results">
+        <div class="card h-100 shadow-sm">
+          <img [src]="product.image || 'assets/placeholder-product.jpg'" [alt]="product.name" class="card-img-top" style="height: 200px; object-fit: cover;" />
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title fw-bold text-truncate">{{ product.name }}</h5>
+            <p class="card-text text-muted"><i class="bi bi-tag"></i> {{ product.category }}</p>
+            <p class="card-text" *ngIf="product.description">
+              <small>{{ product.description | slice:0:80 }}...</small>
+            </p>
+            <div class="mt-auto">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="h5 text-primary mb-0">${{ product.price }}</span>
+                <ion-button size="small" color="primary" aria-label="Agregar al carrito">Agregar</ion-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

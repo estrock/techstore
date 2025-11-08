@@ -270,14 +270,9 @@ ion-buttons {
 
 /* 🔹 Footer real del HTML (ion-footer) */
 ion-footer.footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
   background: #fff;
   border-top: 1px solid #ddd;
   text-align: center;
-  z-index: 100;
 }
 
 ion-footer .contact {
@@ -311,9 +306,7 @@ ion-footer .contact {
 }
 
 /* 🔹 Asegura que el contenido no quede oculto bajo el footer */
-ion-content::part(scroll) {
-  padding-bottom: 80px;
-}
+/* El contenido ya no necesita espacio adicional por un footer fijo */
 
 /* 🔹 Encabezado */
 .header {
@@ -365,4 +358,20 @@ ion-content::part(scroll) {
       }
     }
   }
+}
+
+/* Separador con imagen del Home */
+.home-divider {
+  .home-divider-img {
+    height: 48px;
+    opacity: 0.9;
+  }
+}
+
+/* Separador horizontal claro entre secciones */
+hr.section-divider {
+  border: 0;
+  border-top: 2px solid #e0e0e0;
+  width: 90%;
+  margin-inline: auto;
 }
