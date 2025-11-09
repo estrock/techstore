@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { IonicSlides, IonicModule } from '@ionic/angular';
+import { IonicModule } from '@ionic/angular';
 import { register } from 'swiper/element/bundle';
 import { Router } from '@angular/router';
 import { ProductsService, Product } from '../../services/products.service';
@@ -21,10 +21,10 @@ register();
 })
 export class HomePage implements OnInit, OnDestroy {
 
-  // ✅ SOLO productos de Firebase
+  // ✅ Productos cargados desde Firebase o fallback
   products: Product[] = [];
-  
-  // Interfaz para banners
+
+  // ✅ Banners del carrusel principal
   banners: Array<{
     img: string;
     title?: string;
@@ -46,11 +46,11 @@ export class HomePage implements OnInit, OnDestroy {
       description: 'Los mejores productos tecnológicos al alcance de tu mano'
     },
   ];
-  
+
   searchTerm: string = '';
   selectedFilter: string = 'recientes';
   isLoading: boolean = true;
-  cartItemCount: number = 0; // Contador de items en carrito
+  cartItemCount: number = 0;
 
   private productsSubscription: Subscription | null = null;
 
@@ -77,11 +77,10 @@ export class HomePage implements OnInit, OnDestroy {
     }
   }
 
-  // 🔥 Cargar productos desde Firebase con manejo de permisos y fallback
+  // 🔥 Cargar productos desde Firebase o usar fallback local
   async loadFirebaseProducts() {
     this.isLoading = true;
 
-    // Si no está logueado o estamos en modo dev sin sesión, usar fallback
     const devMode = localStorage.getItem('dev_session') === 'active';
     if (!this.authService.isLoggedIn() && !devMode) {
       console.warn('👤 Usuario no logueado: usando catálogo local');
@@ -89,7 +88,6 @@ export class HomePage implements OnInit, OnDestroy {
       return;
     }
 
-    // Verificar permisos antes de abrir el canal en tiempo real
     const canRead = await this.productsService.canReadProducts();
     if (!canRead) {
       console.warn('🔒 Sin permisos de lectura: usando catálogo local');
@@ -101,28 +99,16 @@ export class HomePage implements OnInit, OnDestroy {
       next: (products) => {
         this.products = products;
         this.isLoading = false;
-        console.log('✅ Productos en tiempo real cargados:', products.length);
-
-        products.forEach((product, index) => {
-          console.log(`📦 Producto ${index + 1}:`, {
-            nombre: product.name,
-            precio: product.price,
-            categoria: product.category,
-            stock: product.stock,
-            destacado: product.featured
-          });
-        });
+        console.log('✅ Productos cargados en tiempo real:', products.length);
       },
       error: (error) => {
-        // En teoría no deberíamos llegar aquí si canRead fue true,
-        // pero si ocurre, caemos a catálogo local sin spamear errores.
-        console.warn('⚠️ Canal en tiempo real falló, usando catálogo local');
+        console.warn('⚠️ Error en canal en tiempo real. Usando catálogo local.');
         this.loadFallbackProducts();
       }
     });
   }
 
-  // 📦 Fallback: cargar productos desde assets/bd.json
+  // 📦 Cargar productos locales desde assets/bd.json
   private loadFallbackProducts() {
     this.http.get<any[]>('assets/bd.json').subscribe({
       next: (items) => {
@@ -147,7 +133,7 @@ export class HomePage implements OnInit, OnDestroy {
     });
   }
 
-  // 🏷️ Formatear precio
+  // 🏷️ Formatear precios
   formatPrice(price: number): string {
     return new Intl.NumberFormat('es-MX', {
       style: 'currency',
@@ -155,7 +141,7 @@ export class HomePage implements OnInit, OnDestroy {
     }).format(price);
   }
 
-  // 🔍 Manejar cambios en la búsqueda
+  // 🔍 Buscar productos
   onSearchChange(event: any) {
     if (event && event.key && event.key.toLowerCase() === 'enter') {
       const term = (this.searchTerm || '').trim();
@@ -173,25 +159,21 @@ export class HomePage implements OnInit, OnDestroy {
 
   // 🛒 Agregar producto al carrito
   addToCart(product: Product) {
-    console.log('Agregando al carrito:', product.name);
+    console.log('🛍️ Agregando al carrito:', product.name);
     this.cartItemCount++;
-    // Aquí implementarías la lógica real del carrito
+    // Aquí implementa la lógica real del carrito
   }
 
-  // 🔄 Manejar cambio de filtro
+  // 🔄 Cambiar filtro de productos
   onFilterChange(filter: string) {
     this.selectedFilter = filter;
-    
+
     if (filter === 'categorias') {
       this.router.navigate(['/categories']);
-    }
-    else if (filter === 'populares') {
-      console.log('📊 Filtro populares seleccionado');
-      // Aquí puedes implementar lógica para productos populares
-    }
-    else if (filter === 'recientes') {
-      console.log('🆕 Filtro recientes seleccionado');
-      // Los productos ya vienen ordenados por fecha de creación
+    } else if (filter === 'populares') {
+      console.log('📊 Filtro "populares" seleccionado');
+    } else if (filter === 'recientes') {
+      console.log('🆕 Filtro "recientes" seleccionado');
     }
   }
 
@@ -200,9 +182,9 @@ export class HomePage implements OnInit, OnDestroy {
     this.router.navigate(['/cart']);
   }
 
-  // 📱 Ver detalles del producto
+  // 👁️ Ver detalles del producto
   viewProductDetails(product: Product) {
-    console.log('Ver detalles:', product);
+    console.log('🔍 Ver detalles:', product);
     // this.router.navigate(['/product-details', product.id]);
   }
 
@@ -212,5 +194,10 @@ export class HomePage implements OnInit, OnDestroy {
     setTimeout(() => {
       event.target.complete();
     }, 1000);
+  }
+
+  // 🚀 Ir a la página de inicio de sesión
+  goToLogin() {
+    this.router.navigate(['/login']);
   }
 }

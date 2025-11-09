@@ -11,6 +11,12 @@
     </ion-title>
 
     <ion-buttons slot="end">
+      <!-- 🔹 Icono de Usuario para iniciar sesión -->
+      <ion-button (click)="goToLogin()" fill="clear" aria-label="Iniciar sesión">
+        <i class="bi bi-person-circle fs-3 text-dark"></i>
+      </ion-button>
+
+      <!-- 🔹 Icono de Carrito -->
       <ion-button (click)="goToCart()" fill="clear" class="position-relative" aria-label="Abrir carrito">
         <i class="bi bi-cart3 fs-3 text-dark"></i>
         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" *ngIf="cartItemCount > 0">
@@ -78,7 +84,7 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <!-- Banner Slider con Bootstrap Carousel -->
+  <!-- Banner Slider -->
   <div id="bannerCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" *ngIf="banners.length > 0">
     <div class="carousel-indicators">
       <button *ngFor="let banner of banners; let i = index" 
@@ -108,16 +114,15 @@
     </button>
   </div>
 
-  <!-- Separador visual claro entre el carrusel (lanzamientos) y la grilla (recientes) -->
   <hr class="section-divider my-4" aria-hidden="true" />
 
-  <!-- Loading State -->
+  <!-- Loading -->
   <div *ngIf="isLoading" class="loading-container">
     <ion-spinner name="crescent"></ion-spinner>
     <p>Cargando productos...</p>
   </div>
 
-  <!-- Productos de Firebase con Bootstrap -->
+  <!-- Productos -->
   <div *ngIf="!isLoading" class="container my-4 fade-in">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h2 class="fw-bold text-primary">
@@ -126,7 +131,6 @@
       <span class="badge bg-secondary rounded-pill">{{ products.length }} productos</span>
     </div>
 
-    <!-- Grid de productos con Bootstrap -->
     <div class="row g-4">
       <div 
         class="col-12 col-sm-6 col-md-4 col-lg-3" 
@@ -143,12 +147,10 @@
               style="height: 200px; object-fit: cover;"
               (error)="product.image = 'assets/logo.PNG'" />
             
-            <!-- Badge para productos destacados -->
             <span *ngIf="product.featured" class="position-absolute top-0 start-0 translate-middle badge bg-warning text-dark">
               <i class="bi bi-star-fill"></i> Destacado
             </span>
             
-            <!-- Badge de stock -->
             <span 
               class="position-absolute top-0 end-0 badge"
               [class.bg-success]="product.stock > 0"
@@ -184,7 +186,7 @@
       </div>
     </div>
 
-    <!-- Mensaje si no hay productos -->
+    <!-- Sin productos -->
     <div *ngIf="products.length === 0" class="text-center py-5">
       <div class="card border-0 bg-light">
         <div class="card-body">
@@ -197,7 +199,6 @@
   </div>
 </ion-content>
 
-<!-- 🔹 Pie de página con Bootstrap al final de la página -->
 <ion-footer class="footer bg-dark text-white">
   <div class="container py-4">
     <div class="row">
@@ -206,38 +207,22 @@
           <i class="bi bi-telephone-fill me-2"></i>Contáctanos
         </h5>
         <div class="d-flex gap-3">
-          <a href="#" class="btn btn-outline-light btn-sm">
-            <i class="bi bi-tiktok" aria-hidden="true"></i> <span class="visually-hidden">TikTok</span>
-          </a>
-          <a href="#" class="btn btn-outline-success btn-sm">
-            <i class="bi bi-whatsapp" aria-hidden="true"></i> <span class="visually-hidden">WhatsApp</span>
-          </a>
-          <a href="#" class="btn btn-outline-danger btn-sm">
-            <i class="bi bi-instagram" aria-hidden="true"></i> <span class="visually-hidden">Instagram</span>
-          </a>
-          <a href="#" class="btn btn-outline-danger btn-sm">
-            <i class="bi bi-youtube" aria-hidden="true"></i> <span class="visually-hidden">YouTube</span>
-          </a>
+          <a href="#" class="btn btn-outline-light btn-sm"><i class="bi bi-tiktok"></i></a>
+          <a href="#" class="btn btn-outline-success btn-sm"><i class="bi bi-whatsapp"></i></a>
+          <a href="#" class="btn btn-outline-danger btn-sm"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="btn btn-outline-danger btn-sm"><i class="bi bi-youtube"></i></a>
         </div>
       </div>
       <div class="col-md-6 text-md-end">
-        <h5 class="fw-bold mb-3">
-          <i class="bi bi-info-circle me-2"></i>Información
-        </h5>
-        <p class="mb-1">
-          <i class="bi bi-geo-alt me-2"></i>Dirección: Calle Principal #123
-        </p>
-        <p class="mb-1">
-          <i class="bi bi-telephone me-2"></i>Teléfono: +1 234-567-8900
-        </p>
-        <p class="mb-0">
-          <i class="bi bi-envelope me-2"></i>Email: info@techstore.com
-        </p>
+        <h5 class="fw-bold mb-3"><i class="bi bi-info-circle me-2"></i>Información</h5>
+        <p><i class="bi bi-geo-alt me-2"></i>Dirección: Calle Principal #123</p>
+        <p><i class="bi bi-telephone me-2"></i>Teléfono: +1 234-567-8900</p>
+        <p><i class="bi bi-envelope me-2"></i>Email: info@techstore.com</p>
       </div>
     </div>
     <hr class="my-3">
     <div class="text-center">
-      <p class="mb-0">&copy; 2024 TechStore. Todos los derechos reservados.</p>
+      <p>&copy; 2024 TechStore. Todos los derechos reservados.</p>
     </div>
   </div>
 </ion-footer>

@@ -26,7 +26,8 @@ ion-toolbar {
       gap: 8px;
       
       .logo {
-        height: 24px;
+        width: 150px;
+        height: auto;
       }
     }
   }
@@ -321,7 +322,8 @@ ion-item-options {
   }
 
   .logo {
-    height: 28px;
+    width: 150px;
+    height: auto;
   }
 
   ion-icon {
