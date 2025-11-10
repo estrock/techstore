@@ -41,7 +41,7 @@
  *  (window as any).__Zone_enable_cross_context_check = true;
  *
  */
- 
+//import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './zone-flags';
 
 /***************************************************************************************************
