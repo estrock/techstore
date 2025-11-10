@@ -66,7 +66,8 @@
                 <div class="col-2">
                   <div class="input-group input-group-sm">
                     <button class="btn btn-outline-secondary" (click)="decreaseQuantity(item)">-</button>
-                    <input type="number" class="form-control text-center" [(ngModel)]="item.quantity" readonly>
+                    <!-- <input type="number" class="form-control text-center" [(ngModel)]="item.quantity" readonly> -->
+                    <input type="number" class="form-control text-center" [(ngModel)]="item.quantity" >
                     <button class="btn btn-outline-secondary" (click)="increaseQuantity(item)">+</button>
                   </div>
                 </div>
