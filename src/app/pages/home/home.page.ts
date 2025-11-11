@@ -82,12 +82,12 @@ export class HomePage implements OnInit, OnDestroy {
     this.isLoading = true;
 
     const devMode = localStorage.getItem('dev_session') === 'active';
-    if (!this.authService.isLoggedIn() && !devMode) {
+    /*if (!this.authService.isLoggedIn() && !devMode) {
       console.warn('👤 Usuario no logueado: usando catálogo local');
       this.loadFallbackProducts();
       return;
     }
-
+    */
     const canRead = await this.productsService.canReadProducts();
     if (!canRead) {
       console.warn('🔒 Sin permisos de lectura: usando catálogo local');

@@ -5,15 +5,13 @@ import {
   doc, 
   getDocs, 
   getDoc, 
-  setDoc, 
-  updateDoc, 
+  updateDoc,
   deleteDoc,
   query,
-  where,
-  orderBy
+  where
 } from '@angular/fire/firestore';
 import { AlertController } from '@ionic/angular';
-import { BehaviorSubject, from, map, Observable } from 'rxjs';
+import { from, map, Observable } from 'rxjs';
 
 export interface User {
   uid: string;
@@ -33,8 +31,6 @@ export interface User {
 })
 export class UserService {
   private usersCollection = collection(this.firestore, 'users');
-  private usersSubject = new BehaviorSubject<User[]>([]);
-  public users$ = this.usersSubject.asObservable();
 
   constructor(
     private firestore: Firestore,
@@ -45,9 +41,7 @@ export class UserService {
    * Obtener todos los usuarios
    */
   getUsers(): Observable<User[]> {
-    return from(
-      getDocs(this.usersCollection)
-    ).pipe(
+    return from(getDocs(this.usersCollection)).pipe(
       map(snapshot => {
         const users: User[] = [];
         snapshot.forEach(doc => {
@@ -65,7 +59,7 @@ export class UserService {
             address: data['address'] || ''
           });
         });
-        this.usersSubject.next(users);
+        console.log('✅ Usuarios cargados:', users.length);
         return users;
       })
     );
@@ -75,9 +69,7 @@ export class UserService {
    * Obtener usuario por ID
    */
   getUserById(uid: string): Observable<User | null> {
-    return from(
-      getDoc(doc(this.firestore, 'users', uid))
-    ).pipe(
+    return from(getDoc(doc(this.firestore, 'users', uid))).pipe(
       map(docSnap => {
         if (docSnap.exists()) {
           const data = docSnap.data();
@@ -100,60 +92,6 @@ export class UserService {
   }
 
   /**
-   * Crear nuevo usuario
-   */
-  async createUser(userData: Partial<User>): Promise<boolean> {
-    try {
-      const uid = userData.uid || this.generateId();
-      const userDoc = doc(this.firestore, 'users', uid);
-      
-      const user: User = {
-        uid: uid,
-        email: userData.email || '',
-        name: userData.name || '',
-        role: userData.role || 'user',
-        status: userData.status || 'active',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        phone: userData.phone || '',
-        address: userData.address || ''
-      };
-
-      await setDoc(userDoc, user);
-      console.log('✅ Usuario creado:', user.email);
-      await this.showAlert('Éxito', 'Usuario creado correctamente');
-      return true;
-    } catch (error: any) {
-      console.error('❌ Error creando usuario:', error);
-      await this.showAlert('Error', 'No se pudo crear el usuario');
-      return false;
-    }
-  }
-
-  /**
-   * Actualizar usuario existente
-   */
-  async updateUser(uid: string, userData: Partial<User>): Promise<boolean> {
-    try {
-      const userDoc = doc(this.firestore, 'users', uid);
-      
-      const updateData = {
-        ...userData,
-        updatedAt: new Date()
-      };
-
-      await updateDoc(userDoc, updateData);
-      console.log('✅ Usuario actualizado:', uid);
-      await this.showAlert('Éxito', 'Usuario actualizado correctamente');
-      return true;
-    } catch (error: any) {
-      console.error('❌ Error actualizando usuario:', error);
-      await this.showAlert('Error', 'No se pudo actualizar el usuario');
-      return false;
-    }
-  }
-
-  /**
    * Actualizar estado del usuario
    */
   async updateUserStatus(uid: string, status: 'active' | 'inactive' | 'suspended'): Promise<boolean> {
@@ -169,6 +107,7 @@ export class UserService {
       return true;
     } catch (error: any) {
       console.error('❌ Error actualizando estado:', error);
+      this.showAlert('Error', 'No se pudo actualizar el estado del usuario');
       return false;
     }
   }
@@ -186,11 +125,11 @@ export class UserService {
       });
       
       console.log('✅ Rol actualizado:', uid, role);
-      await this.showAlert('Éxito', 'Rol actualizado correctamente');
+      this.showAlert('Éxito', 'Rol actualizado correctamente');
       return true;
     } catch (error: any) {
       console.error('❌ Error actualizando rol:', error);
-      await this.showAlert('Error', 'No se pudo actualizar el rol');
+      this.showAlert('Error', 'No se pudo actualizar el rol');
       return false;
     }
   }
@@ -204,32 +143,23 @@ export class UserService {
       const userDoc = await getDoc(doc(this.firestore, 'users', uid));
       
       if (!userDoc.exists()) {
-        await this.showAlert('Error', 'Usuario no encontrado');
-        return false;
-      }
-
-      const userData = userDoc.data();
-      
-      // Prevenir que un admin se elimine a sí mismo
-      const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-      if (currentUser.uid === uid) {
-        await this.showAlert('Error', 'No puedes eliminar tu propia cuenta');
+        this.showAlert('Error', 'Usuario no encontrado');
         return false;
       }
 
       await deleteDoc(doc(this.firestore, 'users', uid));
       console.log('✅ Usuario eliminado:', uid);
-      await this.showAlert('Éxito', 'Usuario eliminado correctamente');
+      this.showAlert('Éxito', 'Usuario eliminado correctamente');
       return true;
     } catch (error: any) {
       console.error('❌ Error eliminando usuario:', error);
-      await this.showAlert('Error', 'No se pudo eliminar el usuario');
+      this.showAlert('Error', 'No se pudo eliminar el usuario');
       return false;
     }
   }
 
   /**
-   * Buscar usuarios por nombre o email
+   * Buscar usuarios
    */
   searchUsers(searchTerm: string): Observable<User[]> {
     return this.getUsers().pipe(
@@ -244,25 +174,7 @@ export class UserService {
   }
 
   /**
-   * Filtrar usuarios por rol
-   */
-  getUsersByRole(role: string): Observable<User[]> {
-    return this.getUsers().pipe(
-      map(users => users.filter(user => user.role === role))
-    );
-  }
-
-  /**
-   * Filtrar usuarios por estado
-   */
-  getUsersByStatus(status: string): Observable<User[]> {
-    return this.getUsers().pipe(
-      map(users => users.filter(user => user.status === status))
-    );
-  }
-
-  /**
-   * Obtener estadísticas de usuarios
+   * Obtener estadísticas
    */
   getUserStats(): Observable<any> {
     return this.getUsers().pipe(
@@ -271,25 +183,16 @@ export class UserService {
         const admins = users.filter(u => u.role === 'admin').length;
         const active = users.filter(u => u.status === 'active').length;
         const inactive = users.filter(u => u.status === 'inactive').length;
-        const suspended = users.filter(u => u.status === 'suspended').length;
 
         return {
           total,
           admins,
           active,
           inactive,
-          suspended,
           activePercentage: total > 0 ? (active / total * 100).toFixed(1) : 0
         };
       })
     );
-  }
-
-  /**
-   * Generar ID único para nuevos usuarios
-   */
-  private generateId(): string {
-    return 'user_' + Math.random().toString(36).substr(2, 9);
   }
 
   /**
