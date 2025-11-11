@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { register } from 'swiper/element/bundle';
 import { Router } from '@angular/router';
@@ -19,32 +19,50 @@ register();
   standalone: true,
   imports: [CommonModule, IonicModule, FormsModule, SocialIconsComponent]
 })
-export class HomePage implements OnInit, OnDestroy {
+export class HomePage implements OnInit, OnDestroy, AfterViewInit {
 
   // ✅ Productos cargados desde Firebase o fallback
   products: Product[] = [];
 
   // ✅ Banners del carrusel principal
   banners: Array<{
-    img: string;
+    img?: string;
+    video?: string; // compatibilidad legado (MP4)
+    videoMp4?: string; // fuente específica MP4
+    videoWebm?: string; // fuente específica WebM
+    poster?: string;
+    srcset?: string; // versiones @1x/@2x opcionales para mayor nitidez en desktop
     title?: string;
     description?: string;
   }> = [
     {
-      img: 'assets/products/Lanzamiento.png',
+      videoMp4: 'assets/products/celulares_iphones_i.mp4',
+      poster: 'assets/products/Lanzamiento.png',
+      // srcset: 'assets/banners/lanzamiento-1920x400.webp 1x, assets/banners/lanzamiento-3840x800.webp 2x',
       title: 'Nuevos Lanzamientos',
       description: 'Descubre las últimas novedades en tecnología'
     },
     {
-      img: 'assets/products/home_venta.jpg',
+      videoMp4: 'assets/products/Smartwatch360.mp4',
+      // srcset: 'assets/banners/ofertas-1920x400.webp 1x, assets/banners/ofertas-3840x800.webp 2x',
       title: 'Ofertas Especiales',
-      description: 'Descuentos increíbles esta semana en laptops y accesorios'
+      description: 'Descubre y actualizate'
     },
     {
-      img: 'assets/products/home_venta.jpg',
-      title: 'Bienvenido a TechStore',
-      description: 'Los mejores productos tecnológicos al alcance de tu mano'
+      // Fallback actual (se mantiene hasta que subas las versiones convertidas)
+      video: 'assets/products/Bienvenida_techstore.mp4',
+      // Fuente MP4 que EXISTE actualmente
+      videoMp4: 'assets/products/Bienvenida_techstore.mp4',
+     // poster: 'assets/products/celulares_vitrina.jpg',
+      // srcset: 'assets/banners/bienvenida-1920x400.webp 1x, assets/banners/bienvenida-3840x800.webp 2x',
     },
+    // Ejemplo (descomentar cuando agregues tu video en assets/banners):
+    // {
+    //   video: 'assets/banners/tu-video.mp4',
+    //   poster: 'assets/banners/tu-video-poster.jpg',
+    //   title: 'Video Promocional',
+    //   description: 'Conoce nuestras ofertas en video'
+    // },
   ];
 
   searchTerm: string = '';
@@ -53,6 +71,8 @@ export class HomePage implements OnInit, OnDestroy {
   cartItemCount: number = 0;
 
   private productsSubscription: Subscription | null = null;
+  private carouselEl: HTMLElement | null = null;
+  private onSlidHandler: ((e: Event) => void) | null = null;
 
   slideOpts = {
     initialSlide: 0,
@@ -71,9 +91,24 @@ export class HomePage implements OnInit, OnDestroy {
     this.loadFirebaseProducts();
   }
 
+  ngAfterViewInit() {
+    // Referencia al carrusel de Bootstrap y reproducción del video del slide activo
+    this.carouselEl = document.getElementById('bannerCarousel');
+    // Llamada inicial para intentar reproducir si el slide activo es video
+    setTimeout(() => this.playActiveSlideVideo(), 0);
+    // Al terminar la transición de slide, reproducir video si corresponde
+    if (this.carouselEl) {
+      this.onSlidHandler = () => this.playActiveSlideVideo();
+      this.carouselEl.addEventListener('slid.bs.carousel', this.onSlidHandler as EventListener);
+    }
+  }
+
   ngOnDestroy() {
     if (this.productsSubscription) {
       this.productsSubscription.unsubscribe();
+    }
+    if (this.carouselEl && this.onSlidHandler) {
+      this.carouselEl.removeEventListener('slid.bs.carousel', this.onSlidHandler as EventListener);
     }
   }
 
@@ -198,5 +233,34 @@ export class HomePage implements OnInit, OnDestroy {
   // 🚀 Ir a la página de inicio de sesión
   goToLogin() {
     this.router.navigate(['/login']);
+  }
+
+  // ▶️ Reproducir el video del slide activo y pausar el resto
+  private playActiveSlideVideo() {
+    try {
+      const allVideos: HTMLVideoElement[] = Array.from(document.querySelectorAll('video.banner-video')) as HTMLVideoElement[];
+      // Pausar todos los videos primero
+      allVideos.forEach((v) => {
+        try { v.pause(); } catch {}
+      });
+
+      // Buscar el video en el slide activo
+      const activeVideo = document.querySelector('.carousel-item.active video.banner-video') as HTMLVideoElement | null;
+      if (activeVideo) {
+        // Reproducir automáticamente el video del slide activo (silencioso por políticas de navegador)
+        activeVideo.muted = true; // necesario para autoplay en la mayoría de navegadores
+        (activeVideo as any).playsInline = true; // iOS
+        activeVideo.autoplay = true;
+        activeVideo.loop = true;
+        const playPromise = activeVideo.play();
+        if (playPromise && typeof playPromise.then === 'function') {
+          playPromise.catch((err: any) => {
+            console.warn('No se pudo iniciar reproducción automática del video:', err);
+          });
+        }
+      }
+    } catch (err) {
+      console.warn('playActiveSlideVideo error:', err);
+    }
   }
 }

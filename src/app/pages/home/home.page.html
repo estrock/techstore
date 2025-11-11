@@ -75,33 +75,64 @@
   </ion-refresher>
 
   <!-- Banner Slider -->
-  <div id="bannerCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" *ngIf="banners.length > 0">
-    <div class="carousel-indicators">
-      <button *ngFor="let banner of banners; let i = index" 
-              type="button" 
-              [attr.data-bs-target]="'#bannerCarousel'" 
-              [attr.data-bs-slide-to]="i" 
-              [class.active]="i === 0"
-              [attr.aria-label]="'Slide ' + (i + 1)">
-      </button>
-    </div>
-    <div class="carousel-inner">
-      <div class="carousel-item" *ngFor="let banner of banners; let i = index" [class.active]="i === 0" data-bs-interval="3000">
-        <img [src]="banner.img" class="d-block w-100" [alt]="banner.title || 'Banner'" style="height: 200px; object-fit: cover;" (error)="banner.img = 'assets/logo.PNG'" />
-        <div class="carousel-caption d-none d-md-block" *ngIf="banner.title || banner.description">
-          <h5 class="fw-bold">{{banner.title}}</h5>
-          <p>{{banner.description}}</p>
+  <div class="banner-fullbleed" *ngIf="banners.length > 0">
+    <div id="bannerCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+      <div class="carousel-indicators">
+        <button *ngFor="let banner of banners; let i = index" 
+                type="button" 
+                [attr.data-bs-target]="'#bannerCarousel'" 
+                [attr.data-bs-slide-to]="i" 
+                [class.active]="i === 0"
+                [attr.aria-label]="'Slide ' + (i + 1)">
+        </button>
+      </div>
+      <div class="carousel-inner">
+        <div class="carousel-item" *ngFor="let banner of banners; let i = index" [class.active]="i === 0" [attr.data-bs-interval]="(banner.video || banner.videoMp4 || banner.videoWebm) ? 0 : 3000">
+          <ng-container *ngIf="banner.video || banner.videoMp4 || banner.videoWebm; else imageBanner">
+            <video
+              class="d-block banner-video"
+              [attr.poster]="banner.poster || null"
+              preload="auto"
+              playsinline
+              controls
+              muted
+              autoplay
+              loop
+              data-autoplay
+            >
+              <source *ngIf="banner.videoWebm" [src]="banner.videoWebm" type="video/webm" />
+              <source *ngIf="banner.videoMp4 || banner.video" [src]="banner.videoMp4 || banner.video" type="video/mp4" />
+              Tu navegador no soporta video HTML5.
+            </video>
+          </ng-container>
+          <ng-template #imageBanner>
+            <img 
+              [src]="banner.img" 
+              [attr.srcset]="banner.srcset || null"
+              sizes="100vw"
+              decoding="async"
+              class="d-block banner-image" 
+              [alt]="banner.title || 'Banner'" 
+              (error)="banner.img = 'assets/logo.PNG'" 
+            />
+          </ng-template>
+          <div class="carousel-caption d-none d-md-block" *ngIf="banner.title || banner.description">
+            <div class="banner-caption">
+              <h3 class="banner-title"><i class="bi bi-stars me-2"></i>{{banner.title}}</h3>
+              <p class="banner-subtitle">{{banner.description}}</p>
+            </div>
+          </div>
         </div>
       </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Anterior</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Siguiente</span>
+      </button>
     </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Anterior</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Siguiente</span>
-    </button>
   </div>
 
   <hr class="section-divider my-4" aria-hidden="true" />

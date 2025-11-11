@@ -21,33 +21,24 @@ export class AppComponent {
   ) {}
 
   async ngOnInit() {
-    const devMode = localStorage.getItem('dev_session') === 'active';
-    const loggedIn = this.authService?.isLoggedIn?.() || false;
-
-    // Si no hay sesión (y no estamos en modo dev), usar categorías del catálogo local
-    if (!loggedIn && !devMode) {
-      this.loadCategoriesFallback();
-      return;
-    }
-
-    // Verificar permisos antes de suscribir en tiempo real
+    // Intentar usar Firestore en tiempo real siempre que haya permisos;
+    // si no hay permisos, usar el catálogo local como respaldo.
     const canRead = await this.productsService.canReadProducts().catch(() => false);
-    if (!canRead) {
+    if (canRead) {
+      this.productsService.getProductsRealTime().subscribe({
+        next: (items: Product[]) => {
+          const set = new Set<string>();
+          items.forEach(p => { if (p.category) set.add(p.category); });
+          this.categories = Array.from(set).sort((a, b) => a.localeCompare(b));
+        },
+        error: () => {
+          // Si el canal falla por permisos, cargar categorías desde assets
+          this.loadCategoriesFallback();
+        }
+      });
+    } else {
       this.loadCategoriesFallback();
-      return;
     }
-
-    this.productsService.getProductsRealTime().subscribe({
-      next: (items: Product[]) => {
-        const set = new Set<string>();
-        items.forEach(p => { if (p.category) set.add(p.category); });
-        this.categories = Array.from(set).sort((a, b) => a.localeCompare(b));
-      },
-      error: () => {
-        // Si el canal falla por permisos, cargar categorías desde assets
-        this.loadCategoriesFallback();
-      }
-    });
   }
 
   closeMenu() {
