@@ -17,9 +17,6 @@ import { CommonModule } from '@angular/common';
         <a href="https://www.instagram.com" target="_blank" class="social-icon instagram" title="Instagram">
           <i class="bi bi-instagram"></i>
         </a>
-        <a href="https://twitter.com" target="_blank" class="social-icon twitter" title="Twitter">
-          <i class="bi bi-twitter"></i>
-        </a>
       </div>
     </div>
   `,
@@ -70,10 +67,6 @@ import { CommonModule } from '@angular/common';
 
     .instagram {
       background: linear-gradient(135deg, #e4405f, #c13584, #833ab4, #5851db, #405de6);
-    }
-
-    .twitter {
-      background: linear-gradient(135deg, #1da1f2, #0d8bd9);
     }
 
     @media (max-width: 768px) {
