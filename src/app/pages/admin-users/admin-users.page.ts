@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { AlertController, ModalController } from '@ionic/angular';
-import { UserService } from '../../services/user.service';
+import { AlertController, ModalController, LoadingController } from '@ionic/angular';
+import { UserService, User } from '../../services/user.service';
 
 @Component({
   selector: 'app-admin-users',
@@ -11,11 +11,15 @@ import { UserService } from '../../services/user.service';
   standalone: false
 })
 export class AdminUsersPage implements OnInit {
-  users: any[] = [];
-  filteredUsers: any[] = [];
+  users: User[] = [];
+  filteredUsers: User[] = [];
   searchTerm: string = '';
+  loading: boolean = true;
 
-  // Estadísticas para el template
+  currentUser: any = null;
+  currentUserRole: string = '';
+
+  // Estadísticas
   totalUsers: number = 0;
   adminUsers: number = 0;
   activeUsers: number = 0;
@@ -24,28 +28,61 @@ export class AdminUsersPage implements OnInit {
   constructor(
     private userService: UserService,
     private alertController: AlertController,
-    private modalController: ModalController,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private loadingCtrl: LoadingController
   ) {}
 
-  ngOnInit() {
-    this.loadUsers();
+  async ngOnInit() {
+    this.currentUser = this.authService.currentUser;
+    this.currentUserRole = this.authService.userRole;
+    await this.loadUsers();
   }
 
-  loadUsers() {
-    this.userService.getUsers().subscribe({
-      next: (users) => {
-        this.users = users;
-        this.filteredUsers = users;
-        this.calculateStats();
-        console.log('Usuarios cargados:', users);
-      },
-      error: (error) => {
-        console.error('Error loading users:', error);
-        this.showAlert('Error', 'No se pudieron cargar los usuarios');
-      }
-    });
+  async loadUsers() {
+    this.loading = true;
+    
+    try {
+      const loading = await this.loadingCtrl.create({
+        message: 'Cargando usuarios...'
+      });
+      await loading.present();
+
+      this.userService.getUsers().subscribe({
+        next: (users) => {
+          this.users = users;
+          this.filteredUsers = users;
+          this.calculateStats();
+          console.log('✅ Usuarios cargados:', users);
+          loading.dismiss();
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('❌ Error loading users:', error);
+          this.showAlert('Error', 'No se pudieron cargar los usuarios');
+          loading.dismiss();
+          this.loading = false;
+        }
+      });
+    } catch (error) {
+      console.error('❌ Error en loadUsers:', error);
+      this.loading = false;
+    }
+  }
+
+  // CORREGIDO: Un solo método handleImageError
+  handleImageError(event: any, context: any) {
+    if (context === 'logo') {
+      // Error en el logo
+      event.target.src = 'https://via.placeholder.com/150x40/4d8dff/ffffff?text=TechStore';
+    } else if (typeof context === 'object' && context.name) {
+      // Es un objeto usuario
+      const user = context;
+      event.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=4d8dff&color=fff`;
+    } else {
+      // Fallback genérico
+      event.target.src = 'https://ui-avatars.com/api/?name=Usuario&background=4d8dff&color=fff';
+    }
   }
 
   // Calcular estadísticas
@@ -58,33 +95,23 @@ export class AdminUsersPage implements OnInit {
 
   searchUsers(event: any) {
     this.searchTerm = event.target.value.toLowerCase();
-    this.filteredUsers = this.users.filter(user => 
-      user.name.toLowerCase().includes(this.searchTerm) ||
-      user.email.toLowerCase().includes(this.searchTerm) ||
-      user.role.toLowerCase().includes(this.searchTerm)
-    );
-  }
+    
+    if (!this.searchTerm) {
+      this.filteredUsers = this.users;
+      return;
+    }
 
-  async addUser() {
-    // Por ahora, vamos a crear un usuario básico sin modal
-    const alert = await this.alertController.create({
-      header: 'Crear Usuario',
-      message: 'Esta funcionalidad estará disponible pronto',
-      buttons: ['OK']
+    this.userService.searchUsers(this.searchTerm).subscribe({
+      next: (filteredUsers) => {
+        this.filteredUsers = filteredUsers;
+      },
+      error: (error) => {
+        console.error('Error buscando usuarios:', error);
+      }
     });
-    await alert.present();
   }
 
-  async editUser(user: any) {
-    const alert = await this.alertController.create({
-      header: 'Editar Usuario',
-      message: `Editando: ${user.name}`,
-      buttons: ['OK']
-    });
-    await alert.present();
-  }
-
-  async toggleUserStatus(user: any) {
+  async toggleUserStatus(user: User) {
     const newStatus = user.status === 'active' ? 'inactive' : 'active';
     
     const alert = await this.alertController.create({
@@ -111,7 +138,7 @@ export class AdminUsersPage implements OnInit {
     await alert.present();
   }
 
-  async changeUserRole(user: any) {
+  async changeUserRole(user: User) {
     const alert = await this.alertController.create({
       header: 'Cambiar Rol',
       message: `Selecciona el nuevo rol para ${user.name}:`,
@@ -161,7 +188,7 @@ export class AdminUsersPage implements OnInit {
     await alert.present();
   }
 
-  async deleteUser(user: any) {
+  async deleteUser(user: User) {
     // Prevenir que el usuario se elimine a sí mismo
     if (this.authService.currentUser?.uid === user.uid) {
       this.showAlert('Error', 'No puedes eliminar tu propia cuenta');
@@ -208,6 +235,24 @@ export class AdminUsersPage implements OnInit {
       case 'moderator': return 'warning';
       case 'user': return 'primary';
       default: return 'medium';
+    }
+  }
+
+  getRoleText(role: string): string {
+    switch (role) {
+      case 'admin': return 'Administrador';
+      case 'moderator': return 'Moderador';
+      case 'user': return 'Usuario';
+      default: return role;
+    }
+  }
+
+  getStatusText(status: string): string {
+    switch (status) {
+      case 'active': return 'Activo';
+      case 'inactive': return 'Inactivo';
+      case 'suspended': return 'Suspendido';
+      default: return status;
     }
   }
 

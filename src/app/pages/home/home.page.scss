@@ -6,6 +6,117 @@ ion-content {
   color: #000;
 }
 
+/* ===== Header Home personalizado ===== */
+.home-toolbar {
+  --background: #fff;
+  border-bottom: 1px solid #e6e6e6;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+}
+
+.left-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.menu-btn {
+  color: #333;
+}
+
+.logo-large {
+  height: 48px;
+  width: auto;
+}
+
+.link-inicio {
+  background: transparent;
+  border: none;
+  color: #1f53ff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.search-group {
+  flex: 1;
+}
+
+.search-group .input-group {
+  width: 100%;
+}
+
+.icons-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.filters-row {
+  display: flex;
+  justify-content: center;
+  padding: 6px 12px 8px;
+  border-top: 1px solid #f2f2f2;
+}
+
+@media (max-width: 768px) {
+  .logo-large { height: 40px; }
+  .header-row { gap: 8px; }
+}
+
+/* ===== Vista móvil compacta ===== */
+@media (max-width: 600px) {
+  .header-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto; /* izquierda | espacio flexible | íconos */
+    grid-template-areas:
+      "left spacer icons"
+      "search search search";
+    padding: 6px 8px;
+    gap: 8px;
+  }
+
+  .left-group {
+    grid-area: left;
+    width: auto;
+    gap: 8px;
+  }
+
+  /* Columna flexible para mantener separación sin mover los íconos */
+  .spacer { grid-area: spacer; }
+
+  .logo-large { height: 34px; }
+
+  .menu-btn ion-icon { font-size: 22px; }
+
+  .link-inicio {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .search-group {
+    grid-area: search;
+    width: 100%;
+  }
+
+  .icons-group {
+    grid-area: icons;
+    justify-content: flex-end;
+    align-self: center;
+  }
+
+  .filters-row {
+    padding: 4px 8px 6px;
+  }
+}
+
 /* 🔹 Estilos para el icono del carrito */
 ion-toolbar {
   ion-button[position-relative] {

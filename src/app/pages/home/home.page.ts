@@ -80,14 +80,8 @@ export class HomePage implements OnInit, OnDestroy {
   // 🔥 Cargar productos desde Firebase o usar fallback local
   async loadFirebaseProducts() {
     this.isLoading = true;
-
-    /*const devMode = localStorage.getItem('dev_session') === 'active';
-    if (!this.authService.isLoggedIn() && !devMode) {
-      console.warn('👤 Usuario no logueado: usando catálogo local');
-      this.loadFallbackProducts();
-      return;
-    }*/
-
+    const devMode = localStorage.getItem('dev_session') === 'active';
+    // Nota: la verificación de login se omite; se usa permisos de lectura
     const canRead = await this.productsService.canReadProducts();
     if (!canRead) {
       console.warn('🔒 Sin permisos de lectura: usando catálogo local');
@@ -180,6 +174,11 @@ export class HomePage implements OnInit, OnDestroy {
   // 🛒 Ir al carrito
   goToCart() {
     this.router.navigate(['/cart']);
+  }
+
+  // 🏠 Ir a Inicio desde el header
+  goHome() {
+    this.router.navigate(['/home']);
   }
 
   // 👁️ Ver detalles del producto

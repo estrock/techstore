@@ -62,4 +62,9 @@ export class SearchPage implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.sub?.unsubscribe();
   }
+
+  // Navegación desde el header
+  goHome() { this.router.navigate(['/home']); }
+  goToLogin() { this.router.navigate(['/login']); }
+  goToCart() { this.router.navigate(['/cart']); }
 }

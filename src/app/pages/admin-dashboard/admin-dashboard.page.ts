@@ -133,9 +133,37 @@ verifyAuthentication() {
   }
 
   goToUsers() {
-    console.log('➡️ Navegando a Usuarios');
-    this.router.navigate(['/admin-users']);
+  console.log('🔍 DIAGNÓSTICO COMPLETO:');
+  console.log('1. ✅ Botón clickeado - goToUsers() ejecutado');
+  console.log('2. ✅ Router disponible:', !!this.router);
+  
+  // Verificar si el router está inyectado correctamente
+  console.log('3. ✅ this.router:', this.router);
+  
+  // Verificar rutas disponibles
+  if (this.router && this.router.config) {
+    const routes = this.router.config.map(route => route.path).filter(path => path);
+    console.log('4. ✅ Rutas configuradas:', routes);
+    console.log('5. ✅ admin-users en rutas:', routes.includes('admin-users'));
+  } else {
+    console.log('❌ Router config no disponible');
   }
+  
+  console.log('6. ✅ Intentando navegación a /admin-users');
+  
+  this.router.navigate(['/admin-users']).then(
+    (success) => {
+      console.log('✅ NAVEGACIÓN EXITOSA:', success);
+      console.log('✅ URL actual:', window.location.href);
+    },
+    (error) => {
+      console.error('❌ ERROR EN NAVEGACIÓN:', error);
+      console.log('🔍 Error details:', error);
+    }
+  ).catch((catchError) => {
+    console.error('❌ ERROR CAPTURADO:', catchError);
+  });
+}
 
   logout() {
     console.log('🚪 Cerrando sesión desde dashboard...');

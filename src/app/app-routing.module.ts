@@ -83,20 +83,21 @@ const routes: Routes = [
     loadComponent: () =>
       import('./pages/search/search.page').then((m) => m.SearchPage)
   },
-
-  // 🚫 Ruta comodín: redirige a home si no existe
-  {
-    path: '**',
-    redirectTo: 'home',
-    pathMatch: 'full'
-  },
   {
     path: 'admin-users',
     loadChildren: () =>
       import('./pages/admin-users/admin-users.module').then(
         (m) => m.AdminUsersPageModule
       )
+  },
+
+  // 🚫 Ruta comodín: redirige a home si no existe
+  {
+    path: '**',
+    redirectTo: 'home',
+    pathMatch: 'full'
   }
+  
 ];
 
 @NgModule({

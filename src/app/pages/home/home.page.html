@@ -1,77 +1,67 @@
 <ion-header class="header">
-  <ion-toolbar class="bg-primary text-white">
-    <ion-buttons slot="start">
-      <ion-menu-button class="text-white" aria-label="Abrir menú" menu="categoriesMenu">
-        <ion-icon name="menu-outline"></ion-icon>
-      </ion-menu-button>
-    </ion-buttons>
+  <ion-toolbar class="home-toolbar">
+    <div class="header-row">
+      <div class="left-group">
+        <img src="assets/logo.PNG" alt="Tech Store" class="logo-large" />
+        <ion-menu-button class="menu-btn" aria-label="Abrir menú" menu="categoriesMenu">
+          <ion-icon name="menu-outline"></ion-icon>
+        </ion-menu-button>
+        <button class="link-inicio" (click)="goHome()" aria-label="Ir a Inicio">Inicio</button>
+      </div>
 
-    <ion-title class="text-center">
-      <img src="assets/logo.PNG" alt="Tech Store" class="logo" />
-    </ion-title>
+      <div class="search-group">
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0">
+            <ion-icon name="search-outline"></ion-icon>
+          </span>
+          <input
+            type="text"
+            class="form-control border-start-0"
+            placeholder="Buscar productos..."
+            aria-label="Buscar productos"
+            [(ngModel)]="searchTerm"
+            [ngModelOptions]="{standalone: true}"
+            (keyup)="onSearchChange($event)"
+          />
+          <button class="btn btn-outline-secondary" type="button" (click)="clearSearch()" aria-label="Limpiar búsqueda">
+            <ion-icon name="close-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
 
-    <ion-buttons slot="end">
-      <!-- 🔹 Icono de Usuario para iniciar sesión -->
-      <ion-button (click)="goToLogin()" fill="clear" aria-label="Iniciar sesión">
-        <i class="bi bi-person-circle fs-3 text-dark"></i>
-      </ion-button>
-
-      <!-- 🔹 Icono de Carrito -->
-      <ion-button (click)="goToCart()" fill="clear" class="position-relative" aria-label="Abrir carrito">
-        <i class="bi bi-cart3 fs-3 text-dark"></i>
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" *ngIf="cartItemCount > 0">
-          {{cartItemCount}}
-          <span class="visually-hidden">productos en carrito</span>
-        </span>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-
-  <ion-toolbar class="bg-white">
-    <ion-breadcrumbs>
-      <ion-breadcrumb aria-current="page">Inicio</ion-breadcrumb>
-    </ion-breadcrumbs>
-  </ion-toolbar>
-
-  <ion-toolbar class="bg-light">
-    <div class="container-fluid px-3">
-      <div class="input-group">
-        <span class="input-group-text bg-white border-end-0">
-          <ion-icon name="search-outline"></ion-icon>
-        </span>
-        <input 
-          type="text" 
-          class="form-control border-start-0" 
-          placeholder="Buscar productos..." 
-          aria-label="Buscar productos"
-          [(ngModel)]="searchTerm" 
-          [ngModelOptions]="{standalone: true}"
-          (keyup)="onSearchChange($event)">
-        <button class="btn btn-outline-secondary" type="button" (click)="clearSearch()" aria-label="Limpiar búsqueda">
-          <ion-icon name="close-outline"></ion-icon>
-        </button>
+      <div class="icons-group">
+        <ion-button (click)="goToLogin()" fill="clear" aria-label="Iniciar sesión">
+          <i class="bi bi-person-circle fs-4"></i>
+        </ion-button>
+        <ion-button (click)="goToCart()" fill="clear" class="position-relative" aria-label="Abrir carrito">
+          <i class="bi bi-cart3 fs-4"></i>
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" *ngIf="cartItemCount > 0">
+            {{cartItemCount}}
+            <span class="visually-hidden">productos en carrito</span>
+          </span>
+        </ion-button>
       </div>
     </div>
-  </ion-toolbar>
 
-  <ion-toolbar class="filter-toolbar bg-white shadow-sm">
-    <div class="container-fluid">
-      <div class="btn-group w-100" role="group" aria-label="Filtros de productos">
-        <button 
-          type="button" 
-          class="btn btn-outline-primary flex-fill"
+    <div class="filters-row">
+      <div class="btn-group" role="group" aria-label="Filtros de productos">
+        <button
+          type="button"
+          class="btn btn-outline-primary"
           [class.active]="selectedFilter === 'populares'"
-          (click)="onFilterChange('populares')">
+          (click)="onFilterChange('populares')"
+        >
           <ion-icon name="flame-outline" class="me-1"></ion-icon>
-          <span aria-label="Filtrar por populares">Populares</span>
+          Populares
         </button>
-        <button 
-          type="button" 
-          class="btn btn-outline-primary flex-fill"
+        <button
+          type="button"
+          class="btn btn-outline-primary"
           [class.active]="selectedFilter === 'recientes'"
-          (click)="onFilterChange('recientes')">
+          (click)="onFilterChange('recientes')"
+        >
           <ion-icon name="time-outline" class="me-1"></ion-icon>
-          <span aria-label="Filtrar por recientes">Recientes</span>
+          Recientes
         </button>
       </div>
     </div>
