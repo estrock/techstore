@@ -33,6 +33,7 @@
     "bootstrap": "^5.3.8",
     "firebase": "^12.4.0",
     "ionicons": "^7.0.0",
+    "ngx-paypal": "^11.0.0",
     "rxjs": "~7.8.0",
     "swiper": "^12.0.2",
     "tslib": "^2.3.0",
