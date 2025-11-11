@@ -1,0 +1,21 @@
+ion-item.invalid {
+  --border-color: var(--ion-color-danger);
+}
+
+ion-note[color="danger"] {
+  font-size: 12px;
+  padding: 0 16px;
+  display: block;
+}
+
+form {
+  padding-bottom: 20px;
+}
+
+ion-button[type="submit"] {
+  margin: 20px 16px;
+}
+
+ion-spinner {
+  margin-right: 8px;
+}

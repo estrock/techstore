@@ -1,0 +1,112 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin-dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Gestión de Usuarios</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="loadUsers()">
+        <ion-icon slot="icon-only" name="refresh"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Barra de búsqueda -->
+  <ion-searchbar 
+    placeholder="Buscar usuarios por nombre, email o rol..."
+    (ionInput)="searchUsers($event)"
+    debounce="300">
+  </ion-searchbar>
+
+  <!-- Estadísticas rápidas -->
+  <ion-card *ngIf="users.length > 0">
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="3" class="ion-text-center">
+            <h3>{{ totalUsers }}</h3>
+            <p>Total</p>
+          </ion-col>
+          <ion-col size="3" class="ion-text-center">
+            <h3>{{ adminUsers }}</h3>
+            <p>Admins</p>
+          </ion-col>
+          <ion-col size="3" class="ion-text-center">
+            <h3>{{ activeUsers }}</h3>
+            <p>Activos</p>
+          </ion-col>
+          <ion-col size="3" class="ion-text-center">
+            <h3>{{ inactiveUsers }}</h3>
+            <p>Inactivos</p>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Lista de usuarios -->
+  <ion-list>
+    <ion-item-sliding *ngFor="let user of filteredUsers">
+      <ion-item>
+        <ion-avatar slot="start">
+          <img [src]="'https://ui-avatars.com/api/?name=' + user.name + '&background=random'" />
+        </ion-avatar>
+        <ion-label>
+          <h2>{{ user.name }}</h2>
+          <p>{{ user.email }}</p>
+          <p>
+            <ion-badge [color]="getRoleColor(user.role)">{{ user.role }}</ion-badge>
+            <ion-badge [color]="getStatusColor(user.status)" class="ion-margin-start">
+              {{ user.status }}
+            </ion-badge>
+          </p>
+          <p>Creado: {{ user.createdAt | date:'short' }}</p>
+        </ion-label>
+      </ion-item>
+
+      <ion-item-options side="end">
+        <!-- Editar -->
+        <ion-item-option (click)="editUser(user)" color="primary">
+          <ion-icon name="create" slot="icon-only"></ion-icon>
+        </ion-item-option>
+        
+        <!-- Cambiar rol -->
+        <ion-item-option (click)="changeUserRole(user)" color="warning">
+          <ion-icon name="key" slot="icon-only"></ion-icon>
+        </ion-item-option>
+        
+        <!-- Activar/Desactivar -->
+        <ion-item-option 
+          (click)="toggleUserStatus(user)" 
+          [color]="user.status === 'active' ? 'warning' : 'success'">
+          <ion-icon 
+            [name]="user.status === 'active' ? 'pause' : 'checkmark'" 
+            slot="icon-only">
+          </ion-icon>
+        </ion-item-option>
+        
+        <!-- Eliminar -->
+        <ion-item-option (click)="deleteUser(user)" color="danger">
+          <ion-icon name="trash" slot="icon-only"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+  <!-- Mensaje cuando no hay usuarios -->
+  <div *ngIf="filteredUsers.length === 0" class="ion-text-center ion-padding">
+    <ion-icon name="people-outline" size="large"></ion-icon>
+    <h3>No se encontraron usuarios</h3>
+    <p *ngIf="searchTerm">Intenta con otros términos de búsqueda</p>
+    <p *ngIf="!searchTerm">No hay usuarios registrados</p>
+  </div>
+
+  <!-- Botón flotante para agregar usuario -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="addUser()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

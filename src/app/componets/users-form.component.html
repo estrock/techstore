@@ -1,0 +1,113 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ isEdit ? 'Editar Usuario' : 'Nuevo Usuario' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onSubmit()" [disabled]="loading">
+        <ion-icon 
+          [name]="loading ? 'hourglass' : (isEdit ? 'checkmark' : 'add')" 
+          slot="icon-only">
+        </ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+    <ion-list>
+      <!-- Nombre -->
+      <ion-item [class.invalid]="name?.invalid && name?.touched">
+        <ion-label position="stacked">Nombre completo *</ion-label>
+        <ion-input 
+          formControlName="name" 
+          type="text" 
+          placeholder="Ej: Juan Pérez">
+        </ion-input>
+      </ion-item>
+      <ion-note *ngIf="name?.invalid && name?.touched" color="danger">
+        <div *ngIf="name?.errors?.['required']">El nombre es requerido</div>
+        <div *ngIf="name?.errors?.['minlength']">Mínimo 2 caracteres</div>
+      </ion-note>
+
+      <!-- Email -->
+      <ion-item [class.invalid]="email?.invalid && email?.touched">
+        <ion-label position="stacked">Email *</ion-label>
+        <ion-input 
+          formControlName="email" 
+          type="email" 
+          placeholder="Ej: usuario@ejemplo.com"
+          [disabled]="isEdit">
+        </ion-input>
+      </ion-item>
+      <ion-note *ngIf="email?.invalid && email?.touched" color="danger">
+        <div *ngIf="email?.errors?.['required']">El email es requerido</div>
+        <div *ngIf="email?.errors?.['email']">Formato de email inválido</div>
+      </ion-note>
+
+      <!-- Teléfono -->
+      <ion-item>
+        <ion-label position="stacked">Teléfono</ion-label>
+        <ion-input 
+          formControlName="phone" 
+          type="tel" 
+          placeholder="Ej: +1234567890">
+        </ion-input>
+      </ion-item>
+
+      <!-- Dirección -->
+      <ion-item>
+        <ion-label position="stacked">Dirección</ion-label>
+        <ion-textarea 
+          formControlName="address" 
+          rows="3" 
+          placeholder="Dirección completa">
+        </ion-textarea>
+      </ion-item>
+
+      <!-- Rol -->
+      <ion-item>
+        <ion-label position="stacked">Rol *</ion-label>
+        <ion-select formControlName="role" interface="action-sheet">
+          <ion-select-option value="user">👤 Usuario</ion-select-option>
+          <ion-select-option value="moderator">🛡️ Moderador</ion-select-option>
+          <ion-select-option value="admin">👑 Administrador</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Estado -->
+      <ion-item>
+        <ion-label position="stacked">Estado *</ion-label>
+        <ion-select formControlName="status" interface="action-sheet">
+          <ion-select-option value="active">✅ Activo</ion-select-option>
+          <ion-select-option value="inactive">⏸️ Inactivo</ion-select-option>
+          <ion-select-option value="suspended">🚫 Suspendido</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+
+    <!-- Botón de enviar -->
+    <ion-button 
+      type="submit" 
+      expand="block" 
+      [disabled]="!userForm.valid || loading"
+      class="ion-margin">
+      <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+      <span *ngIf="!loading">
+        {{ isEdit ? 'Actualizar Usuario' : 'Crear Usuario' }}
+      </span>
+    </ion-button>
+
+    <!-- Información adicional -->
+    <ion-note color="medium" class="ion-padding">
+      <small>
+        * Campos obligatorios<br>
+        {{ isEdit ? 'Actualizar' : 'Crear' }} usuario en el sistema
+      </small>
+    </ion-note>
+  </form>
+</ion-content>
