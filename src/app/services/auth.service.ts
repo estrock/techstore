@@ -16,8 +16,10 @@ import {
   getDoc
 } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
+// import { HttpClient } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
 import { BehaviorSubject } from 'rxjs';
+// import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -67,6 +69,7 @@ export class AuthService {
       console.log('🔑 Intentando login con:', email);
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
       console.log('✅ Login exitoso:', userCredential.user.email);
+      // Revertido: no se obtiene ni envía ID Token
       
       await this.loadUserRole(userCredential.user.uid);
       
@@ -132,6 +135,7 @@ export class AuthService {
       }
       
       console.log('✅ Login con Google exitoso');
+      // Revertido: no se obtiene ni envía ID Token
       this.router.navigate(['/home']);
     } catch (error: any) {
       console.error('❌ Error en login con Google:', error);
@@ -208,4 +212,6 @@ export class AuthService {
     
     return errorMessages[errorCode] || 'Error desconocido. Intenta nuevamente.';
   }
+
+  // Revertido: se elimina el envío de ID Token al backend
 }

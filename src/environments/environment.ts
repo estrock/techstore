@@ -12,7 +12,8 @@ export const environment = {
     storageBucket: "progmoviln1-2fe21.firebasestorage.app",
     messagingSenderId: "108079697487",
     appId: "1:108079697487:web:3d9a4b9e1de3c67c84243a"
-  }
+  },
+  
 };
 
 /*

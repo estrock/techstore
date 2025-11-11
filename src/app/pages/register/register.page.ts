@@ -21,7 +21,7 @@ export class RegisterPage {
     private authService: AuthService
   ) { }
 
-  // Validar formulario
+  // Validar formulario con política simple (mínimo 6 caracteres)
   isFormValid(): boolean {
     return this.name.length > 0 &&
            this.email.length > 0 &&
@@ -63,7 +63,7 @@ export class RegisterPage {
 
     if (this.password.length < 6) {
       const alert = await this.alertCtrl.create({
-        header: 'Error',
+        header: 'Contraseña muy corta',
         message: 'La contraseña debe tener al menos 6 caracteres.',
         buttons: ['OK'],
       });

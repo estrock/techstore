@@ -81,12 +81,12 @@ export class HomePage implements OnInit, OnDestroy {
   async loadFirebaseProducts() {
     this.isLoading = true;
 
-    const devMode = localStorage.getItem('dev_session') === 'active';
+    /*const devMode = localStorage.getItem('dev_session') === 'active';
     if (!this.authService.isLoggedIn() && !devMode) {
       console.warn('👤 Usuario no logueado: usando catálogo local');
       this.loadFallbackProducts();
       return;
-    }
+    }*/
 
     const canRead = await this.productsService.canReadProducts();
     if (!canRead) {
