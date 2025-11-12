@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
+import { Carrito } from 'src/app/services/carrito/carrito';
 
 register();
 
@@ -84,8 +85,11 @@ export class HomePage implements OnInit, OnDestroy, AfterViewInit {
     private router: Router,
     private productsService: ProductsService,
     private http: HttpClient,
-    private authService: AuthService
-  ) {}
+    private authService: AuthService,
+    private carritoService: Carrito
+  ) {
+    this.carritoService.cartCount$.subscribe(count => this.cartItemCount = count);
+  }
 
   ngOnInit() {
     this.loadFirebaseProducts();
@@ -189,8 +193,11 @@ export class HomePage implements OnInit, OnDestroy, AfterViewInit {
   // 🛒 Agregar producto al carrito
   addToCart(product: Product) {
     console.log('🛍️ Agregando al carrito:', product.name);
-    this.cartItemCount++;
+    // this.cartItemCount++;
     // Aquí implementa la lógica real del carrito
+    const quantity = product.quantity && product.quantity > 0 ? product.quantity : 1;
+    this.carritoService.addToCart(product, quantity);
+    product.quantity = 1; // Reinicia la cantidad
   }
 
   // 🔄 Cambiar filtro de productos

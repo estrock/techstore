@@ -27,6 +27,7 @@ export interface Product {
   featured: boolean;
   createdAt?: Date;  // Hacer opcionales
   updatedAt?: Date;  // Hacer opcionales
+  quantity?: number; // Para uso en carrito
 }
 
 @Injectable({

@@ -14,15 +14,9 @@
           <span class="input-group-text bg-white border-end-0">
             <ion-icon name="search-outline"></ion-icon>
           </span>
-          <input
-            type="text"
-            class="form-control border-start-0"
-            placeholder="Buscar productos..."
-            aria-label="Buscar productos"
-            [(ngModel)]="searchTerm"
-            [ngModelOptions]="{standalone: true}"
-            (keyup)="onSearchChange($event)"
-          />
+          <input type="text" class="form-control border-start-0" placeholder="Buscar productos..."
+            aria-label="Buscar productos" [(ngModel)]="searchTerm" [ngModelOptions]="{standalone: true}"
+            (keyup)="onSearchChange($event)" />
           <button class="btn btn-outline-secondary" type="button" (click)="clearSearch()" aria-label="Limpiar búsqueda">
             <ion-icon name="close-outline"></ion-icon>
           </button>
@@ -35,7 +29,8 @@
         </ion-button>
         <ion-button (click)="goToCart()" fill="clear" class="position-relative" aria-label="Abrir carrito">
           <i class="bi bi-cart3 fs-4"></i>
-          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" *ngIf="cartItemCount > 0">
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+            *ngIf="cartItemCount > 0">
             {{cartItemCount}}
             <span class="visually-hidden">productos en carrito</span>
           </span>
@@ -45,21 +40,13 @@
 
     <div class="filters-row">
       <div class="btn-group" role="group" aria-label="Filtros de productos">
-        <button
-          type="button"
-          class="btn btn-outline-primary"
-          [class.active]="selectedFilter === 'populares'"
-          (click)="onFilterChange('populares')"
-        >
+        <button type="button" class="btn btn-outline-primary" [class.active]="selectedFilter === 'populares'"
+          (click)="onFilterChange('populares')">
           <ion-icon name="flame-outline" class="me-1"></ion-icon>
           Populares
         </button>
-        <button
-          type="button"
-          class="btn btn-outline-primary"
-          [class.active]="selectedFilter === 'recientes'"
-          (click)="onFilterChange('recientes')"
-        >
+        <button type="button" class="btn btn-outline-primary" [class.active]="selectedFilter === 'recientes'"
+          (click)="onFilterChange('recientes')">
           <ion-icon name="time-outline" class="me-1"></ion-icon>
           Recientes
         </button>
@@ -78,43 +65,25 @@
   <div class="banner-fullbleed" *ngIf="banners.length > 0">
     <div id="bannerCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
       <div class="carousel-indicators">
-        <button *ngFor="let banner of banners; let i = index" 
-                type="button" 
-                [attr.data-bs-target]="'#bannerCarousel'" 
-                [attr.data-bs-slide-to]="i" 
-                [class.active]="i === 0"
-                [attr.aria-label]="'Slide ' + (i + 1)">
+        <button *ngFor="let banner of banners; let i = index" type="button" [attr.data-bs-target]="'#bannerCarousel'"
+          [attr.data-bs-slide-to]="i" [class.active]="i === 0" [attr.aria-label]="'Slide ' + (i + 1)">
         </button>
       </div>
       <div class="carousel-inner">
-        <div class="carousel-item" *ngFor="let banner of banners; let i = index" [class.active]="i === 0" [attr.data-bs-interval]="(banner.video || banner.videoMp4 || banner.videoWebm) ? 0 : 3000">
+        <div class="carousel-item" *ngFor="let banner of banners; let i = index" [class.active]="i === 0"
+          [attr.data-bs-interval]="(banner.video || banner.videoMp4 || banner.videoWebm) ? 0 : 3000">
           <ng-container *ngIf="banner.video || banner.videoMp4 || banner.videoWebm; else imageBanner">
-            <video
-              class="d-block banner-video"
-              [attr.poster]="banner.poster || null"
-              preload="auto"
-              playsinline
-              controls
-              muted
-              autoplay
-              loop
-              data-autoplay
-            >
+            <video class="d-block banner-video" [attr.poster]="banner.poster || null" preload="auto" playsinline
+              controls muted autoplay loop data-autoplay>
               <source *ngIf="banner.videoWebm" [src]="banner.videoWebm" type="video/webm" />
-              <source *ngIf="banner.videoMp4 || banner.video" [src]="banner.videoMp4 || banner.video" type="video/mp4" />
+              <source *ngIf="banner.videoMp4 || banner.video" [src]="banner.videoMp4 || banner.video"
+                type="video/mp4" />
               Tu navegador no soporta video HTML5.
             </video>
           </ng-container>
           <ng-template #imageBanner>
-            <img 
-              [src]="banner.img" 
-              [attr.srcset]="banner.srcset || null"
-              sizes="100vw"
-              decoding="async"
-              class="d-block banner-image" 
-              [alt]="banner.title || 'Banner'" 
-              (error)="banner.img = 'assets/logo.PNG'" 
-            />
+            <img [src]="banner.img" [attr.srcset]="banner.srcset || null" sizes="100vw" decoding="async"
+              class="d-block banner-image" [alt]="banner.title || 'Banner'" (error)="banner.img = 'assets/logo.PNG'" />
           </ng-template>
           <div class="carousel-caption d-none d-md-block" *ngIf="banner.title || banner.description">
             <div class="banner-caption">
@@ -153,28 +122,20 @@
     </div>
 
     <div class="row g-4">
-      <div 
-        class="col-12 col-sm-6 col-md-4 col-lg-3" 
-        *ngFor="let product of products"
-        (click)="viewProductDetails(product)"
-        style="cursor: pointer;">
-        
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let product of products"
+        (click)="viewProductDetails(product)" style="cursor: pointer;">
+
         <div class="card h-100 shadow-sm product-card-hover">
           <div class="position-relative">
-            <img 
-              [src]="product.image || 'assets/logo.PNG'" 
-              [alt]="product.name" 
-              class="card-img-top"
-              style="height: 200px; object-fit: cover;"
-              (error)="product.image = 'assets/logo.PNG'" />
-            
-            <span *ngIf="product.featured" class="position-absolute top-0 start-0 translate-middle badge bg-warning text-dark">
+            <img [src]="product.image || 'assets/logo.PNG'" [alt]="product.name" class="card-img-top"
+              style="height: 200px; object-fit: cover;" (error)="product.image = 'assets/logo.PNG'" />
+
+            <span *ngIf="product.featured"
+              class="position-absolute top-0 start-0 translate-middle badge bg-warning text-dark">
               <i class="bi bi-star-fill"></i> Destacado
             </span>
-            
-            <span 
-              class="position-absolute top-0 end-0 badge"
-              [class.bg-success]="product.stock > 0"
+
+            <span class="position-absolute top-0 end-0 badge" [class.bg-success]="product.stock > 0"
               [class.bg-danger]="product.stock === 0">
               <i class="bi" [class.bi-check-circle]="product.stock > 0" [class.bi-x-circle]="product.stock === 0"></i>
               {{ product.stock > 0 ? (product.stock + ' disponibles') : 'Agotado' }}
@@ -186,21 +147,26 @@
             <p class="card-text text-muted">
               <i class="bi bi-tag"></i> {{ product.category }}
             </p>
-            
+
             <p class="card-text" *ngIf="product.description">
               <small>{{ product.description | slice:0:80 }}...</small>
             </p>
-            
+
             <div class="mt-auto">
               <div class="d-flex justify-content-between align-items-center">
                 <span class="h5 text-primary mb-0">{{ formatPrice(product.price) }}</span>
-                <button 
-                  class="btn btn-primary btn-sm"
-                  (click)="addToCart(product); $event.stopPropagation()"
-                  [disabled]="product.stock === 0">
-                  <i class="bi bi-cart-plus"></i> Agregar
-                </button>
               </div>
+
+              <div class="input-group input-group-sm mb-2">
+                <span class="input-group-text">Cantidad</span>
+                <input type="number" class="form-control" min="1" [max]="product.stock" [(ngModel)]="product.quantity"
+                  [ngModelOptions]="{standalone: true}" (click)="$event.stopPropagation()" />
+              </div>
+
+              <button class="btn btn-primary btn-sm" (click)="addToCart(product); $event.stopPropagation()"
+                type="submit" [disabled]="product.stock === 0">
+                <i class="bi bi-cart-plus"></i> Agregar
+              </button>
             </div>
           </div>
         </div>

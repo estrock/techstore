@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ProductsService, Product } from '../../services/products.service';
 import { Subscription } from 'rxjs';
+import { Carrito } from 'src/app/services/carrito/carrito';
 
 @Component({
   selector: 'app-search',
@@ -14,6 +15,7 @@ import { Subscription } from 'rxjs';
   imports: [CommonModule, IonicModule, FormsModule, RouterModule]
 })
 export class SearchPage implements OnInit, OnDestroy {
+  cartItemCount: number = 0;
   q = '';
   category = '';
   allProducts: Product[] = [];
@@ -21,7 +23,9 @@ export class SearchPage implements OnInit, OnDestroy {
   isLoading = true;
   sub: Subscription | null = null;
 
-  constructor(private route: ActivatedRoute, private router: Router, private productsService: ProductsService) {}
+  constructor(private route: ActivatedRoute, private router: Router, private productsService: ProductsService,private carritoService: Carrito) {
+    this.carritoService.cartCount$.subscribe(count => this.cartItemCount = count);
+  }
 
   ngOnInit() {
     this.route.queryParamMap.subscribe(params => {

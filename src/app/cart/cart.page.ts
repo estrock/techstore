@@ -39,20 +39,31 @@ export class CartPage implements OnInit {
 
   loadCartItems() {
     this.isLoading = true;
-    this.carritoService.getItems().subscribe(data => {
-      this.carrito = data;
-      this.cartItems = data.items;
-      console.log("items ", this.cartItems)
+    this.cartItems = this.carritoService.getCartItems();
+    if (this.cartItems) {
       this.isLoading = false;
-    });
+    }
 
   }
 
   increaseQuantity(item: CartItem) {
-    // item.quantity++;
-    this.carritoService.increaseQuantity(item);
-
+    item.quantity++;
+    this.carritoService.updateQuantity(item.id, item.quantity);
   }
+
+  decreaseQuantity(item: CartItem) {
+    if (item.quantity > 1) {
+      item.quantity--;
+      this.carritoService.updateQuantity(item.id, item.quantity);
+    }
+  }
+
+  onQuantityChange(item: CartItem, newQty: number) {
+  const qty = isNaN(newQty) || newQty < 1 ? 1 : newQty;
+  item.quantity = qty;
+  this.carritoService.updateQuantity(item.id, qty);
+}
+
 
   formatPrice(price: number): string {
     return new Intl.NumberFormat('es-MX', {
@@ -61,16 +72,9 @@ export class CartPage implements OnInit {
     }).format(price);
   }
 
-
-
-  decreaseQuantity(item: CartItem) {
-    if (item.quantity > 1) {
-      item.quantity--;
-    }
-  }
-
-  removeItem(itemToRemove: CartItem) {
-    this.cartItems = this.cartItems.filter(item => item.id !== itemToRemove.id);
+  removeItem(item: CartItem) {
+    this.carritoService.removeItem(item.id);
+    this.loadCartItems();
   }
 
   clearCart() {
@@ -89,10 +93,6 @@ export class CartPage implements OnInit {
     return this.getSubtotal() + this.getShipping();
   }
 
-  // checkout() {
-  //   console.log('Procediendo al pago...');
-  //   alert('Funcionalidad de pago en desarrollo. Total: ' + this.formatPrice(this.getTotal()));
-  // }
 
   checkout() {
     // Desactivar el alert y reemplazar con la integración de PayPal

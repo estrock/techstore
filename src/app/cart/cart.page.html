@@ -57,10 +57,8 @@
             <div *ngFor="let item of cartItems; let i = index" class="cart-item p-3 border-bottom">
               <div class="row align-items-center">
                 <div class="col-2">
-                  <img [src]="item.image || 'assets/placeholder-product.jpg'" 
-                       [alt]="item.name" 
-                       class="img-fluid rounded"
-                       style="max-height: 60px; object-fit: cover;">
+                  <img [src]="item.image || 'assets/placeholder-product.jpg'" [alt]="item.name"
+                    class="img-fluid rounded" style="max-height: 60px; object-fit: cover;">
                 </div>
                 <div class="col-4">
                   <h6 class="mb-1">{{item.name}}</h6>
@@ -69,8 +67,9 @@
                 <div class="col-2">
                   <div class="input-group input-group-sm">
                     <button class="btn btn-outline-secondary" (click)="decreaseQuantity(item)">-</button>
-                    <!-- <input type="number" class="form-control text-center" [(ngModel)]="item.quantity" readonly> -->
-                    <input type="number" class="form-control text-center" [(ngModel)]="item.quantity" >
+                    <!-- <input type="number" class="form-control text-center" [(ngModel)]="item.quantity" > -->
+                    <input type="number" class="form-control text-center" [(ngModel)]="item.quantity"
+                      (ngModelChange)="onQuantityChange(item, $event)" min="1">
                     <button class="btn btn-outline-secondary" (click)="increaseQuantity(item)">+</button>
                   </div>
                 </div>
@@ -111,7 +110,7 @@
               <span>Total:</span>
               <span class="text-primary">{{formatPrice(getTotal())}}</span>
             </div>
-            
+
             <button class="btn btn-primary w-100 mt-3" (click)="checkout()">
               <i class="bi bi-credit-card me-2"></i>Proceder al Pago
             </button>
