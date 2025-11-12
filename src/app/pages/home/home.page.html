@@ -127,8 +127,28 @@
 
         <div class="card h-100 shadow-sm product-card-hover">
           <div class="position-relative">
-            <img [src]="product.image || 'assets/logo.PNG'" [alt]="product.name" class="card-img-top"
-              style="height: 200px; object-fit: cover;" (error)="product.image = 'assets/logo.PNG'" />
+            <!-- Prioridad: video directo silenciado > embed de Pinterest > imagen -->
+            <ng-container *ngIf="product.video; else homeEmbed">
+              <ng-container *ngIf="product.video && product.video.toLowerCase().endsWith('.gif'); else homeVideo">
+                <img [src]="product.video" [alt]="product.name" class="card-img-top"
+                  style="height: 200px; object-fit: cover;" />
+              </ng-container>
+              <ng-template #homeVideo>
+                <video [src]="product.video" class="card-img-top" style="height: 200px; object-fit: cover;"
+                  autoplay muted loop playsinline preload="metadata"></video>
+              </ng-template>
+            </ng-container>
+            <ng-template #homeEmbed>
+              <ng-container *ngIf="product.embedUrl; else homeImage">
+                <div class="card-img-top media-wrapper">
+                  <a data-pin-do="embedPin" data-pin-width="250" [href]="product.embedUrl"></a>
+                </div>
+              </ng-container>
+              <ng-template #homeImage>
+                <img [src]="product.image || 'assets/logo.PNG'" [alt]="product.name" class="card-img-top"
+                  style="height: 200px; object-fit: cover;" (error)="product.image = 'assets/logo.PNG'" />
+              </ng-template>
+            </ng-template>
 
             <span *ngIf="product.featured"
               class="position-absolute top-0 start-0 translate-middle badge bg-warning text-dark">

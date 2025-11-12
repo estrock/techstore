@@ -61,6 +61,51 @@ export class SearchPage implements OnInit, OnDestroy {
       const matchCat = !this.category || (p.category?.toLowerCase() === this.category.toLowerCase());
       return matchText && matchCat;
     });
+
+    // Forzar reconstrucción de embeds de Pinterest tras actualizar resultados
+    // Esperamos al siguiente tick para que el DOM esté actualizado
+    setTimeout(() => {
+      try {
+        (window as any).PinUtils?.build?.();
+      } catch {}
+      // Forzar reproducción silenciosa de videos de resultados
+      try {
+        const videos: HTMLVideoElement[] = Array.from(document.querySelectorAll('video.card-img-top')) as HTMLVideoElement[];
+        videos.forEach(v => {
+          try {
+            v.muted = true;
+            (v as any).playsInline = true;
+            (v as any).webkitPlaysInline = true;
+            v.autoplay = true;
+            v.loop = true;
+            const p = v.play();
+            if (p && typeof (p as any).catch === 'function') {
+              (p as any).catch(() => {});
+            }
+          } catch {}
+        });
+      } catch {}
+    }, 0);
+  }
+
+  // (Opcional) método dedicado si se requiere invocar desde otros puntos
+  private initProductVideos() {
+    try {
+      const videos: HTMLVideoElement[] = Array.from(document.querySelectorAll('video.card-img-top')) as HTMLVideoElement[];
+      videos.forEach(v => {
+        try {
+          v.muted = true;
+          (v as any).playsInline = true;
+          (v as any).webkitPlaysInline = true;
+          v.autoplay = true;
+          v.loop = true;
+          const p = v.play();
+          if (p && typeof (p as any).catch === 'function') {
+            (p as any).catch(() => {});
+          }
+        } catch {}
+      });
+    } catch {}
   }
 
   ngOnDestroy() {

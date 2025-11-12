@@ -79,7 +79,25 @@
     <div class="row g-4" *ngIf="results.length > 0">
       <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let product of results">
         <div class="card h-100 shadow-sm">
-          <img [src]="product.image || 'assets/placeholder-product.jpg'" [alt]="product.name" class="card-img-top" style="height: 200px; object-fit: cover;" />
+          <!-- Prioridad: video directo silenciado > embed de Pinterest > imagen -->
+          <ng-container *ngIf="product.video; else searchEmbed">
+            <ng-container *ngIf="product.video && product.video.toLowerCase().endsWith('.gif'); else searchVideo">
+              <img [src]="product.video" [alt]="product.name" class="card-img-top" style="height: 200px; object-fit: cover;" />
+            </ng-container>
+            <ng-template #searchVideo>
+              <video [src]="product.video" class="card-img-top" style="height: 200px; object-fit: cover;" autoplay muted loop playsinline preload="metadata"></video>
+            </ng-template>
+          </ng-container>
+          <ng-template #searchEmbed>
+            <ng-container *ngIf="product.embedUrl; else searchImage">
+              <div class="card-img-top media-wrapper">
+                <a data-pin-do="embedPin" data-pin-width="250" [href]="product.embedUrl"></a>
+              </div>
+            </ng-container>
+            <ng-template #searchImage>
+              <img [src]="product.image || 'assets/placeholder-product.jpg'" [alt]="product.name" class="card-img-top" style="height: 200px; object-fit: cover;" />
+            </ng-template>
+          </ng-template>
           <div class="card-body d-flex flex-column">
             <h5 class="card-title fw-bold text-truncate">{{ product.name }}</h5>
             <p class="card-text text-muted"><i class="bi bi-tag"></i> {{ product.category }}</p>

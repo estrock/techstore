@@ -23,6 +23,8 @@ export interface Product {
   price: number;
   category: string;
   image: string;
+  video?: string; // URL de video o GIF (opcional)
+  embedUrl?: string; // URL de embed (Pinterest/YouTube) opcional
   stock: number;
   featured: boolean;
   createdAt?: Date;  // Hacer opcionales
@@ -71,6 +73,8 @@ export class ProductsService {
           price: data['price'],
           category: data['category'],
           image: data['image'],
+          video: data['video'],
+          embedUrl: data['embedUrl'],
           stock: data['stock'],
           featured: data['featured'] || false,
           createdAt: data['createdAt']?.toDate(),
@@ -107,6 +111,8 @@ export class ProductsService {
             price: data['price'],
             category: data['category'],
             image: data['image'],
+            video: data['video'],
+            embedUrl: data['embedUrl'],
             stock: data['stock'],
             featured: data['featured'] || false,
             createdAt: data['createdAt']?.toDate(),
@@ -165,6 +171,8 @@ export class ProductsService {
           price: data['price'],
           category: data['category'],
           image: data['image'],
+          video: data['video'],
+          embedUrl: data['embedUrl'],
           stock: data['stock'],
           featured: data['featured'] || false,
           createdAt: data['createdAt']?.toDate(),
@@ -203,6 +211,8 @@ export class ProductsService {
           price: data['price'],
           category: data['category'],
           image: data['image'],
+          video: data['video'],
+          embedUrl: data['embedUrl'],
           stock: data['stock'],
           featured: data['featured'],
           createdAt: data['createdAt']?.toDate(),
@@ -259,6 +269,8 @@ export class ProductsService {
           price: data['price'],
           category: data['category'],
           image: data['image'],
+          video: data['video'],
+          embedUrl: data['embedUrl'],
           stock: data['stock'],
           featured: data['featured'] || false,
           createdAt: data['createdAt']?.toDate(),

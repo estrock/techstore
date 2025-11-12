@@ -133,6 +133,11 @@ export class HomePage implements OnInit, OnDestroy, AfterViewInit {
         this.products = products;
         this.isLoading = false;
         console.log('✅ Productos cargados en tiempo real:', products.length);
+        // Reconstruir embeds de Pinterest tras actualizar el DOM
+        setTimeout(() => {
+          try { (window as any).PinUtils?.build?.(); } catch {}
+          this.initProductVideos();
+        }, 0);
       },
       error: (error) => {
         console.warn('⚠️ Error en canal en tiempo real. Usando catálogo local.');
@@ -158,6 +163,11 @@ export class HomePage implements OnInit, OnDestroy, AfterViewInit {
         this.products = mapped;
         this.isLoading = false;
         console.log('📦 Catálogo local cargado:', mapped.length);
+        // Reconstruir embeds de Pinterest tras actualizar el DOM
+        setTimeout(() => {
+          try { (window as any).PinUtils?.build?.(); } catch {}
+          this.initProductVideos();
+        }, 0);
       },
       error: (err) => {
         console.error('❌ Error cargando catálogo local:', err);
@@ -269,5 +279,25 @@ export class HomePage implements OnInit, OnDestroy, AfterViewInit {
     } catch (err) {
       console.warn('playActiveSlideVideo error:', err);
     }
+  }
+
+  // Forzar reproducción silenciosa de videos en tarjetas de producto
+  private initProductVideos() {
+    try {
+      const videos: HTMLVideoElement[] = Array.from(document.querySelectorAll('video.card-img-top')) as HTMLVideoElement[];
+      videos.forEach(v => {
+        try {
+          v.muted = true;
+          (v as any).playsInline = true;
+          (v as any).webkitPlaysInline = true;
+          v.autoplay = true;
+          v.loop = true;
+          const p = v.play();
+          if (p && typeof (p as any).catch === 'function') {
+            (p as any).catch(() => {});
+          }
+        } catch {}
+      });
+    } catch {}
   }
 }

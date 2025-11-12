@@ -86,7 +86,23 @@
       <ion-item-sliding *ngFor="let product of products">
         <ion-item class="product-item">
           <ion-thumbnail slot="start">
-            <img [src]="product.image || 'https://via.placeholder.com/80'" [alt]="product.name" />
+            <!-- Prioridad: video directo silenciado > embed de Pinterest > imagen -->
+            <ng-container *ngIf="product.video; else adminEmbed">
+              <ng-container *ngIf="product.video && product.video.toLowerCase().endsWith('.gif'); else videoThumb">
+                <img [src]="product.video" [alt]="product.name" />
+              </ng-container>
+              <ng-template #videoThumb>
+                  <video [src]="product.video" autoplay muted loop playsinline preload="metadata" style="width: 100%; height: 100%; object-fit: cover;"></video>
+              </ng-template>
+            </ng-container>
+            <ng-template #adminEmbed>
+              <ng-container *ngIf="product.embedUrl; else imageThumb">
+                <a data-pin-do="embedPin" data-pin-width="80" [href]="product.embedUrl"></a>
+              </ng-container>
+              <ng-template #imageThumb>
+                <img [src]="product.image || 'https://via.placeholder.com/80'" [alt]="product.name" />
+              </ng-template>
+            </ng-template>
           </ion-thumbnail>
           
           <ion-label class="product-label">

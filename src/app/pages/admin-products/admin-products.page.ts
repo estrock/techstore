@@ -125,6 +125,27 @@ export class AdminProductsPage implements OnInit, OnDestroy {
     try {
       this.products = await this.productsService.getProducts();
       console.log('✅ Productos cargados:', this.products.length);
+      // Reconstruir embeds de Pinterest en la lista del administrador
+      setTimeout(() => {
+        try { (window as any).PinUtils?.build?.(); } catch {}
+        // Forzar reproducción silenciosa de videos en miniaturas
+        try {
+          const videos: HTMLVideoElement[] = Array.from(document.querySelectorAll('ion-thumbnail video')) as HTMLVideoElement[];
+          videos.forEach(v => {
+            try {
+              v.muted = true;
+              (v as any).playsInline = true;
+              (v as any).webkitPlaysInline = true;
+              v.autoplay = true;
+              v.loop = true;
+              const p = v.play();
+              if (p && typeof (p as any).catch === 'function') {
+                (p as any).catch(() => {});
+              }
+            } catch {}
+          });
+        } catch {}
+      }, 0);
     } catch (error) {
       console.error('❌ Error cargando productos:', error);
       this.showAlert('Error', 'No se pudieron cargar los productos');
@@ -164,6 +185,16 @@ export class AdminProductsPage implements OnInit, OnDestroy {
           placeholder: 'URL de la imagen',
         },
         {
+          name: 'video',
+          type: 'url',
+          placeholder: 'URL de video o GIF (opcional)',
+        },
+        {
+          name: 'embedUrl',
+          type: 'url',
+          placeholder: 'URL de embed (Pinterest/YouTube) opcional',
+        },
+        {
           name: 'stock',
           type: 'number',
           placeholder: 'Stock disponible',
@@ -199,6 +230,8 @@ export class AdminProductsPage implements OnInit, OnDestroy {
         price: parseFloat(productData.price),
         category: productData.category,
         image: productData.image || 'assets/placeholder-product.jpg',
+        video: productData.video,
+        embedUrl: productData.embedUrl,
         stock: parseInt(productData.stock),
         featured: false
       };
@@ -252,6 +285,18 @@ export class AdminProductsPage implements OnInit, OnDestroy {
           value: product.image,
         },
         {
+          name: 'video',
+          type: 'url',
+          placeholder: 'URL de video o GIF (opcional)',
+          value: product.video,
+        },
+        {
+          name: 'embedUrl',
+          type: 'url',
+          placeholder: 'URL de embed (Pinterest/YouTube) opcional',
+          value: product.embedUrl,
+        },
+        {
           name: 'stock',
           type: 'number',
           placeholder: 'Stock disponible',
@@ -294,6 +339,8 @@ export class AdminProductsPage implements OnInit, OnDestroy {
         price: parseFloat(productData.price),
         category: productData.category,
         image: productData.image,
+        video: productData.video,
+        embedUrl: productData.embedUrl,
         stock: parseInt(productData.stock),
         featured: productData.featured || false
       };
