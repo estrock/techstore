@@ -1,6 +1,14 @@
+
+ion-content {
+  --background: #ffffff;
+  // display: flex;
+  // flex-direction: column;
+  // height: 100%;
+  // color: #000;
+}
 ion-toolbar.cart-toolbar {
   --background: #ffffff;
-  --color: #000000;
+  // --color: #000000;
 
   ion-buttons {
     ion-back-button {
@@ -89,7 +97,7 @@ ion-toolbar.cart-toolbar {
   background: white;
   border-radius: 15px;
   padding: 25px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  // box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin-bottom: 25px;
   
   h4 {
